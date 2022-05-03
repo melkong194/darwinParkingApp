@@ -13,5 +13,7 @@ https://console.cloud.google.com/
  
  IOS/Runner/Base.lproj/ AppDelegate.swift    line 11
  
- lib/global/map_key.dart 		    line 1
+ lib/global/map_key.dart 		                  line 1
+ 
+ android/app/google-services.json            line 23
 
