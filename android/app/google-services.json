@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "882161014668",
+    "project_id": "darwin-parking-app",
+    "storage_bucket": "darwin-parking-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882161014668:android:d3d4acd52b43ea9d3268a9",
+        "android_client_info": {
+          "package_name": "com.melko.darwinparking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "882161014668-fte6j1i0uvlen2qkf3tiqa23k91h2jkb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgMLOtcRbchMD07w-3g5LjDyW3IbCzJdM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "882161014668-fte6j1i0uvlen2qkf3tiqa23k91h2jkb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
