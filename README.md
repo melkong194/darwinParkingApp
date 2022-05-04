@@ -2,15 +2,18 @@
 
 A new Flutter project.
 
-## Getting Started
+## Getting Started:
+https://console.cloud.google.com/
 
-This project is a starting point for a Flutter application.
+- After download the code, create API google service( go to library: enable Map SDK for Android, Map SDK for IOS, Geocoding, Place) and enable billing.
 
-A few resources to get you started if this is your first Flutter project:
+- The copy your API_KEY and replace "GOOGLE_API_KEY_HERE" in following files:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+ Android/App/Source/Main AndoidManifest.xml  line 40
+ 
+ IOS/Runner/Base.lproj/ AppDelegate.swift    line 11
+ 
+ lib/global/map_key.dart 		                  line 1
+ 
+ android/app/google-services.json            line 23
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
