@@ -1,7 +1,9 @@
 import 'package:darwin_parking/services/helpers_http.dart';
 import 'package:flutter/material.dart';
-import 'package:darwin_parking/global/map_key.dart';
 
+import '../global/map_key.dart';
+import '../models/predicted_places.dart';
+import '../widget/place_prediction_tile.dart';
 
 
 
@@ -12,22 +14,51 @@ class SearchPlacesScreen extends StatefulWidget
   _SearchPlacesScreenState createState() => _SearchPlacesScreenState();
 }
 
+
+
+
 class _SearchPlacesScreenState extends State<SearchPlacesScreen>
 {
+  List<PredictedPlaces> placesPredictedList = [];
 
+  void findPlaceAutoCompleteSearch(String inputText) async
+  {
+    if(inputText.length > 1) //2 or more than 2 input characters
+        {
+      String urlAutoCompleteSearch = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$inputText&key=$mapKey&components=country:AU";
+
+      var responseAutoCompleteSearch = await HelpersHttp.receiveRequest(urlAutoCompleteSearch);
+
+      if(responseAutoCompleteSearch == "Error Occurred, Failed. No Response.")
+      {
+        return;
+      }
+
+      if(responseAutoCompleteSearch["status"] == "OK")
+      {
+        var placePredictions = responseAutoCompleteSearch["predictions"];
+
+        var placePredictionsList = (placePredictions as List).map((jsonData) => PredictedPlaces.fromJson(jsonData)).toList();
+
+        setState(() {
+          placesPredictedList = placePredictionsList;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context)
   {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Column(
         children: [
           //search place ui
           Container(
             height: 160,
             decoration: const BoxDecoration(
-              color: Colors.white54,
+              color: Colors.black54,
               boxShadow:
               [
                 BoxShadow(
@@ -64,7 +95,7 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>
 
                       const Center(
                         child: Text(
-                          "Search for a location",
+                          "Search for Location",
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.grey,
@@ -93,11 +124,11 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>
                           child: TextField(
                             onChanged: (valueTyped)
                             {
-
+                              findPlaceAutoCompleteSearch(valueTyped);
                             },
                             decoration: const InputDecoration(
-                              hintText: "search here...",
-                              fillColor: Colors.grey,
+                              hintText: "Where do you go",
+                              fillColor: Colors.white54,
                               filled: true,
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.only(
@@ -117,6 +148,29 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>
             ),
           ),
 
+          //display place predictions result
+          (placesPredictedList.length > 0)
+              ? Expanded(
+            child: ListView.separated(
+              itemCount: placesPredictedList.length,
+              physics: ClampingScrollPhysics(),
+              itemBuilder: (context, index)
+              {
+                return PlacePredictionTileDesign(
+                  predictedPlaces: placesPredictedList[index],
+                );
+              },
+              separatorBuilder: (BuildContext context, int index)
+              {
+                return const Divider(
+                  height: 1,
+                  color: Colors.white,
+                  thickness: 1,
+                );
+              },
+            ),
+          )
+              : Container(),
         ],
       ),
     );
