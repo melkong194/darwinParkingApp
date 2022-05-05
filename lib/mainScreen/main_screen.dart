@@ -30,9 +30,9 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
   //Variables Declare
   final LatLng centralPointA = const LatLng(-12.4658003,130.8402635);
-  final LatLng centralPointB = const LatLng(-12.4604642,130.8383165);
-  final LatLng centralPointC = const LatLng(-12.455383,130.8299683);
-  final LatLng centralPointD = const LatLng(-12.454758,130.8363408);
+  final LatLng centralPointB = const LatLng(-12.4654847,130.8417502);
+  final LatLng centralPointC = const LatLng(-12.4629597,130.8417244);
+  final LatLng centralPointD = const LatLng( -12.4650963,130.842975);
   double searchBoxHeight = 230;
   Position? userPosition;
   var geoLocator = Geolocator();
@@ -80,22 +80,22 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     switch (opt){
       case 1:
         slotList = LocationData.zoneA;
-        CameraPosition cameraPosition = CameraPosition(target:centralPointA, zoom: 16);
+        CameraPosition cameraPosition = CameraPosition(target:centralPointA, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
         break;
       case 2:
         slotList = LocationData.zoneB;
-        CameraPosition cameraPosition = CameraPosition(target:centralPointB, zoom: 16);
+        CameraPosition cameraPosition = CameraPosition(target:centralPointB, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
         break;
       case 3:
         slotList = LocationData.zoneC;
-        CameraPosition cameraPosition = CameraPosition(target:centralPointC, zoom: 16);
+        CameraPosition cameraPosition = CameraPosition(target:centralPointC, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
         break;
       case 4:
         slotList = LocationData.zoneD;
-        CameraPosition cameraPosition = CameraPosition(target:centralPointD, zoom: 16);
+        CameraPosition cameraPosition = CameraPosition(target:centralPointD, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
         break;
     }
