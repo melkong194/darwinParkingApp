@@ -11,6 +11,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:darwin_parking/Data/mockdata.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+
+String? mapStyle = '[{"featureType": "poi","stylers": [{"visibility": "off"}]}]';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -24,8 +27,8 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   GoogleMapController? newGoogleMapController;
   final Completer<GoogleMapController> _controllerGoogleMap = Completer();
   static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(19.8968, 155.5828),
-    zoom: 14.4746,
+    target: LatLng(-12.4643775,130.8413732),
+    zoom: 16,
   );
 
   //Variables Declare
@@ -46,6 +49,12 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   String carText = "N/A";
   String disableText = "N/A";
   String motorText = "N/A";
+  String googleAPiKey = "AIzaSyBwLvb_stRaemyipPYsMLmCqNxxUqy3QAw";
+  LatLng startLocation = LatLng(-12.4449168,130.8475173);  
+  LatLng endLocation = LatLng(-12.4625499,130.8428557); 
+  PolylinePoints polylinePoints = PolylinePoints();
+  Map<PolylineId, Polyline> polylines = {}; //polylines to show direction
+
 
 
   //Methods Defined
@@ -69,11 +78,66 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     newLocation.userLat= latlngPosition.latitude;
     newLocation.userLng = latlngPosition.longitude;
     Provider.of<DataHandle>(context, listen: false).updateUserLocation(newLocation);
+    setState(() {
+        myMarker.add(Marker(markerId: MarkerId('My Location'),
+            position: LatLng(userPosition!.latitude ?? 0.0, userPosition!.longitude ?? 0.0)
+        ));
+      });
   }
 
+  getDirections() async {
+      locateUserPosition();
+      startLocation = LatLng(userPosition!.latitude, userPosition!.longitude);  
+      //endLocation = LatLng(27.6688312, 85.3077329); 
+      List<LatLng> polylineCoordinates = [];
+     
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+          googleAPiKey,
+          PointLatLng(startLocation.latitude, startLocation.longitude),
+          PointLatLng(endLocation.latitude, endLocation.longitude),
+          travelMode: TravelMode.driving,
+      );
+
+      if (result.points.isNotEmpty) {
+            result.points.forEach((PointLatLng point) {
+                polylineCoordinates.add(LatLng(point.latitude, point.longitude));                
+            });            
+      } else {
+         print(result.errorMessage);
+      }
+      //print (polylineCoordinates);
+      addPolyLine(polylineCoordinates);
+  }
+
+  addPolyLine(List<LatLng> polylineCoordinates) {
+    PolylineId id = PolylineId("poly");
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color: Colors.lightBlue,
+      points: polylineCoordinates,
+      width: 8,
+    );
+    polylines[id] = polyline;
+    setState(() {
+      myMarker.add(Marker( //add start location marker
+        markerId: MarkerId(startLocation.toString()),
+        position: startLocation, //position of marker
+        infoWindow: InfoWindow( //popup info 
+          title: 'Destination Point ',
+          snippet: 'Destination Marker',
+        ),
+        icon: BitmapDescriptor.defaultMarker, //Icon for Marker
+      ));
+
+      polylines[id] = polyline;
+    });
+
+  }
+
+  
   directPaths()
   {
-
+      getDirections(); //fetch direction polylines from Google API
   }
 
   updateZone(opt) {
@@ -165,6 +229,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
   _handleTap(LatLng tappedPoint) async {
     LatLng desLatLng = tappedPoint;
+    endLocation = tappedPoint;
     setState(() {
       myMarker = [];
       myMarker.add(
@@ -300,6 +365,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         children: [
           GoogleMap(
             polygons: myPolygon(),
+            polylines: Set<Polyline>.of(polylines.values),
             // mapType: MapType.hybrid,
             mapType: MapType.normal,
             myLocationEnabled: false,
@@ -310,6 +376,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
             onMapCreated: (GoogleMapController controller) {
               _controllerGoogleMap.complete(controller);
               newGoogleMapController = controller;
+              newGoogleMapController!.setMapStyle(mapStyle);
 
               //black theme google map
             },
