@@ -41,7 +41,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   List<Marker> myMarker = [];
   LocationPermission? _locationPermission;
   String readAddress = "";
-  List<List<double>> slotList = [];
+  List slotList = [];
   List<int> noSlots = [0,0,0,0,0,0];
   //[availaible car, total car, avaible disable, total disable, available motor, total motor]
   String carText = "N/A";

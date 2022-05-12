@@ -1,33 +1,34 @@
 {
   "project_info": {
-    "project_number": "882161014668",
-    "project_id": "darwin-parking-app",
-    "storage_bucket": "darwin-parking-app.appspot.com"
+    "project_number": "740015801484",
+    "firebase_url": "https://darwinparkingapp-default-rtdb.firebaseio.com",
+    "project_id": "darwinparkingapp",
+    "storage_bucket": "darwinparkingapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:882161014668:android:d3d4acd52b43ea9d3268a9",
+        "mobilesdk_app_id": "1:740015801484:android:b7b66a1e18125c912627a9",
         "android_client_info": {
-          "package_name": "com.melko.darwinparking"
+          "package_name": "com.prt583.darwinparking"
         }
       },
       "oauth_client": [
         {
-          "client_id": "882161014668-fte6j1i0uvlen2qkf3tiqa23k91h2jkb.apps.googleusercontent.com",
+          "client_id": "740015801484-2mabg3vls2g0egi7s004n21a9usa90e1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBwLvb_stRaemyipPYsMLmCqNxxUqy3QAw"
+          "current_key": "AIzaSyDCpsr0wnknIe5ZbqjmCW764s8Gc9PnezM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "882161014668-fte6j1i0uvlen2qkf3tiqa23k91h2jkb.apps.googleusercontent.com",
+              "client_id": "740015801484-2mabg3vls2g0egi7s004n21a9usa90e1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
