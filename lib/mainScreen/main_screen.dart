@@ -34,7 +34,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   final LatLng centralPointB = const LatLng(-12.4654847,130.8417502);
   final LatLng centralPointC = const LatLng(-12.4629597,130.8417244);
   final LatLng centralPointD = const LatLng( -12.4650963,130.842975);
-  double searchBoxHeight = 230;
+  double searchBoxHeight = 140;
   Position? userPosition;
   var geoLocator = Geolocator();
   GlobalKey<ScaffoldState> sKey = GlobalKey<ScaffoldState>();
@@ -383,7 +383,6 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
               newGoogleMapController = controller;
               newGoogleMapController!.setMapStyle(mapStyle);
 
-              //black theme google map
             },
             markers: Set.from(myMarker),
             onTap: _handleTap,
@@ -428,7 +427,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                         width: 15.0,
                       ),
                       Text(
-                        "Parking Bay Finder",
+                        "Availabe parking bays from Zone A",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -439,114 +438,151 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                   //     controller: tabController,
                   //     controller: tabController,
                   //     controller: tabController
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-                  Container(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                    child:
-                    Row(textDirection: TextDirection.rtl, children: <Widget>[
-                      Container(
-                        // margin: const EdgeInsets.all(1),
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius:
-                              const BorderRadius.all(Radius.circular(2.0)),
-                              border: Border.all(
-                                color: Colors.black54, // Set border color
-                              ),
-                              boxShadow: const [
-                                BoxShadow(
-                                    blurRadius: 0,
-                                    color: Colors.grey,
-                                    offset: Offset(1, 1))
-                              ] // Make rounded corner of border
-                          ),
-                          child: Material(
-                            child: IconButton(
-                              // icon: const Icon(Icons.location_on_outlined),
-                              icon:
-                              const Icon(Icons.location_searching_outlined),
-                              iconSize: 25.0,
-                              color: Colors.black54,
-                              onPressed: locateUserPosition,
-                            ),
-                          )),
-                      const SizedBox(
-                        width: 30.0,
-                      ),
-                      Expanded(
-                        child: Material(
-                          child: TextField(
-                            onTap: () async {
-                              var res = await Navigator.push(context, MaterialPageRoute(builder: (c)=> SearchPlacesScreen()));
-                              setState(() {
-                                if(res == "obtainedAddress"){
-                                    Destination  des = Provider.of<DataHandle>(context, listen: false).destination!;
-                                   LatLng point = LatLng(des.desLat!,des.desLng!);
-                                   myMarker = [];
-                                   myMarker.add(
-                                       Marker(
-                                       markerId: const MarkerId("desired destination"),
-                                    position: point));
-                                    CameraPosition cameraPosition = CameraPosition(target:point, zoom: 18);
-                                    newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-                                }
-                              });
-                              },
-                            readOnly: true,
-                            // textInputAction: TextInputAction.search,
-                            decoration: InputDecoration(
-                              hintText: Provider.of<DataHandle>(context, listen: false).destination != null? (Provider.of<DataHandle>(context, listen: false).destination!.desAddress!).substring(0,20) + "..." : "Where do you go?",
-                              hintStyle: const TextStyle(
-                                  color: Colors.grey, fontSize: 18.0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              // contentPadding:
-                              // const EdgeInsets.only(left: 15.0, top: 15.0),
-                              // suffixIcon: Container(
-                              //   margin: const EdgeInsets.all(1),
-                              //   // height: 58,
-                              //   width: 50,
-                              //   decoration: const BoxDecoration(
-                              //     border: Border(
-                              //       left: BorderSide(
-                              //         color: Colors.black54,
-                              //       ),
-                              //     ),
-                              //   ),
-                              //   child: IconButton(
-                              //     icon: const Icon(Icons.search_rounded),
-                              //     iconSize: 30.0,
-                              //     color: Colors.black54,
-                              //     onPressed: () {},
-                              //   ),
-                              // )
-                            ),
-                          ),
-                        ),
-                      ),
-                    ]),
-                  ),
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-                  ElevatedButton(
-                    child: const Text(
-                      "Direction Path",
-                    ),
-                    onPressed: directPaths,
-                    style: ElevatedButton.styleFrom(
-                        primary: const Color.fromRGBO(255, 87, 51, 1),
-                        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
-                    ),
-                  ),
+                  // const SizedBox(
+                  //   height: 15.0,
+                  // ),
+                  // Container(
+                  //   padding:
+                  //   const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                  //   child:
+                  //   Row(textDirection: TextDirection.rtl, children: <Widget>[
+                  //     Container(
+                  //       // margin: const EdgeInsets.all(1),
+                  //         height: 50,
+                  //         width: 50,
+                  //         decoration: BoxDecoration(
+                  //             color: Colors.black,
+                  //             borderRadius:
+                  //             const BorderRadius.all(Radius.circular(2.0)),
+                  //             border: Border.all(
+                  //               color: Colors.black54, // Set border color
+                  //             ),
+                  //             boxShadow: const [
+                  //               BoxShadow(
+                  //                   blurRadius: 0,
+                  //                   color: Colors.grey,
+                  //                   offset: Offset(1, 1))
+                  //             ] // Make rounded corner of border
+                  //         ),
+                  //         child: Material(
+                  //           child: IconButton(
+                  //             // icon: const Icon(Icons.location_on_outlined),
+                  //             icon:
+                  //             const Icon(Icons.location_searching_outlined),
+                  //             iconSize: 25.0,
+                  //             color: Colors.black54,
+                  //             onPressed: locateUserPosition,
+                  //           ),
+                  //         )),
+                  //     const SizedBox(
+                  //       width: 30.0,
+                  //     ),
+                  //     Expanded(
+                  //       child: Material(
+                  //         child: TextField(
+                  //           onTap: () async {
+                  //             var res = await Navigator.push(context, MaterialPageRoute(builder: (c)=> SearchPlacesScreen()));
+                  //             setState(() {
+                  //               if(res == "obtainedAddress"){
+                  //                   Destination  des = Provider.of<DataHandle>(context, listen: false).destination!;
+                  //                  LatLng point = LatLng(des.desLat!,des.desLng!);
+                  //                  myMarker = [];
+                  //                  myMarker.add(
+                  //                      Marker(
+                  //                      markerId: const MarkerId("desired destination"),
+                  //                   position: point));
+                  //                   CameraPosition cameraPosition = CameraPosition(target:point, zoom: 18);
+                  //                   newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+                  //               }
+                  //             });
+                  //             },
+                  //           readOnly: true,
+                  //           // textInputAction: TextInputAction.search,
+                  //           decoration: InputDecoration(
+                  //             hintText: Provider.of<DataHandle>(context, listen: false).destination != null? (Provider.of<DataHandle>(context, listen: false).destination!.desAddress!).substring(0,20) + "..." : "Where do you go?",
+                  //             hintStyle: const TextStyle(
+                  //                 color: Colors.grey, fontSize: 18.0),
+                  //             border: OutlineInputBorder(
+                  //               borderRadius: BorderRadius.circular(4.0),
+                  //             ),
+                  //             // contentPadding:
+                  //             // const EdgeInsets.only(left: 15.0, top: 15.0),
+                  //             // suffixIcon: Container(
+                  //             //   margin: const EdgeInsets.all(1),
+                  //             //   // height: 58,
+                  //             //   width: 50,
+                  //             //   decoration: const BoxDecoration(
+                  //             //     border: Border(
+                  //             //       left: BorderSide(
+                  //             //         color: Colors.black54,
+                  //             //       ),
+                  //             //     ),
+                  //             //   ),
+                  //             //   child: IconButton(
+                  //             //     icon: const Icon(Icons.search_rounded),
+                  //             //     iconSize: 30.0,
+                  //             //     color: Colors.black54,
+                  //             //     onPressed: () {},
+                  //             //   ),
+                  //             // )
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ]),
+                  // ),
+                  // const SizedBox(
+                  //   height: 15.0,
+                  // ),
+                  // ElevatedButton(
+                  //   child: const Text(
+                  //     "Direction Path",
+                  //   ),
+                  //   onPressed: directPaths,
+                  //   style: ElevatedButton.styleFrom(
+                  //       primary: const Color.fromRGBO(255, 87, 51, 1),
+                  //       textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+                  //   ),
+                  // ),
                   Container(
                     height: 50.0,
+                    margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    child:(
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: const <Widget> [
+                              Text("Car",
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    // color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: -1.0,
+                                    wordSpacing: 5.0,),
+                              ),
+                              Spacer(),
+                              Text("Disable",
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  // color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: -1.0,
+                                  wordSpacing: 5.0,),
+                              ),
+                              Spacer(),
+                              Text("Motor",
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  // color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: -1.0,
+                                  wordSpacing: 5.0,),
+                              ),
+                            ]
+                        )
+                    ),
+                  ),
+                  Container(
+                    // height: 70.0,
                     margin: const EdgeInsets.only(left: 10.0, right: 10.0),
                     child:(
                       Row(
