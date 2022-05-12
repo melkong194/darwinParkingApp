@@ -1,10 +1,8 @@
 import 'package:darwin_parking/services/helpers_http.dart';
 import 'package:flutter/material.dart';
-
 import '../global/map_key.dart';
 import '../models/predicted_places.dart';
 import '../widget/place_prediction_tile.dart';
-
 
 
 class SearchPlacesScreen extends StatefulWidget
@@ -127,7 +125,7 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>
                               findPlaceAutoCompleteSearch(valueTyped);
                             },
                             decoration: const InputDecoration(
-                              hintText: "Where do you go",
+                              hintText: "Where do you go?",
                               fillColor: Colors.white54,
                               filled: true,
                               border: InputBorder.none,
@@ -153,7 +151,7 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>
               ? Expanded(
             child: ListView.separated(
               itemCount: placesPredictedList.length,
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               itemBuilder: (context, index)
               {
                 return PlacePredictionTileDesign(

@@ -1,17 +1,15 @@
 import 'dart:async';
 import 'package:darwin_parking/mainScreen/search_places_screen.dart';
 import 'package:darwin_parking/models/Destination.dart';
-import 'package:darwin_parking/models/countParkingBay.dart';
 import 'package:darwin_parking/models/user_location.dart';
 import 'package:darwin_parking/services/dataHandle.dart';
-import 'package:darwin_parking/services/helpers_http.dart';
 import 'package:darwin_parking/services/helpers_method.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:darwin_parking/Data/mockdata.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 String? mapStyle = '[{"featureType": "poi","stylers": [{"visibility": "off"}]}]';
 
@@ -49,6 +47,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   String carText = "N/A";
   String disableText = "N/A";
   String motorText = "N/A";
+
   String googleAPiKey = "AIzaSyBwLvb_stRaemyipPYsMLmCqNxxUqy3QAw";
   LatLng startLocation = LatLng(-12.4449168,130.8475173);  
   LatLng endLocation = LatLng(-12.4625499,130.8428557); 
@@ -122,7 +121,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
       myMarker.add(Marker( //add start location marker
         markerId: MarkerId(startLocation.toString()),
         position: startLocation, //position of marker
-        infoWindow: InfoWindow( //popup info 
+        infoWindow: InfoWindow( //popup info
           title: 'Destination Point ',
           snippet: 'Destination Marker',
         ),
@@ -245,10 +244,16 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
       );
     });
 
+    String add = await HelpersMethod.positionToAddress(desLatLng);
+    UpdateDestination(add, desLatLng.latitude, desLatLng.longitude);
+  }
+
+  UpdateDestination(String add, double dlong, double dlat)
+  {
     Destination  newDes = Destination();
-    newDes.desAddress = await HelpersMethod.positionToAddress(desLatLng);
-    newDes.desLat= desLatLng.latitude;
-    newDes.desLng = desLatLng.longitude;
+    newDes.desAddress = add;
+    newDes.desLat= dlat;
+    newDes.desLng = dlong;
     Provider.of<DataHandle>(context, listen: false).updateDestination(newDes);
   }
 
@@ -476,18 +481,26 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       Expanded(
                         child: Material(
                           child: TextField(
-                            onTap: () {
-                              var response = Navigator.push(context, MaterialPageRoute(builder: (c)=>SearchPlacesScreen()));
-                                if(response == "obtainedDestination"){
-                                  //draw route or do something here
-                                  print("AAAA");
-                                  print(Provider.of<DataHandle>(context).destination!.desAddress);
+                            onTap: () async {
+                              var res = await Navigator.push(context, MaterialPageRoute(builder: (c)=> SearchPlacesScreen()));
+                              setState(() {
+                                if(res == "obtainedAddress"){
+                                    Destination  des = Provider.of<DataHandle>(context, listen: false).destination!;
+                                   LatLng point = LatLng(des.desLat!,des.desLng!);
+                                   myMarker = [];
+                                   myMarker.add(
+                                       Marker(
+                                       markerId: const MarkerId("desired destination"),
+                                    position: point));
+                                    CameraPosition cameraPosition = CameraPosition(target:point, zoom: 18);
+                                    newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
                                 }
+                              });
                               },
                             readOnly: true,
                             // textInputAction: TextInputAction.search,
                             decoration: InputDecoration(
-                              hintText: Provider.of<DataHandle>(context).destination != null? (Provider.of<DataHandle>(context).destination!.desAddress!).substring(0,20) + "..." : "Where do you go?",
+                              hintText: Provider.of<DataHandle>(context, listen: false).destination != null? (Provider.of<DataHandle>(context, listen: false).destination!.desAddress!).substring(0,20) + "..." : "Where do you go?",
                               hintStyle: const TextStyle(
                                   color: Colors.grey, fontSize: 18.0),
                               border: OutlineInputBorder(
@@ -629,20 +642,20 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         ;
   }
 
-  Future<void> drawPolyLineFromOriginToDestination() async
-  {
-    var originPosition = Provider.of<DataHandle>(context, listen: false).userLocation;
-    var destinationPosition = Provider.of<DataHandle>(context, listen: false).destination;
-
-    var originLatLng = LatLng(originPosition!.userLat!, originPosition.userLng!);
-    var destinationLatLng = LatLng(destinationPosition!.desLat!, destinationPosition.desLng!);
-
-    var directionDetailsInfo = await HelpersMethod.obtainDirectionDetails(originLatLng, destinationLatLng);
-
-    Navigator.pop(context);
-
-    print("These are points = ");
-    print(directionDetailsInfo!.e_points);
-
-  }
+  // Future<void> drawPolyLineFromOriginToDestination() async
+  // {
+  //   var originPosition = Provider.of<DataHandle>(context, listen: false).userLocation;
+  //   var destinationPosition = Provider.of<DataHandle>(context, listen: false).destination;
+  //
+  //   var originLatLng = LatLng(originPosition!.userLat!, originPosition.userLng!);
+  //   var destinationLatLng = LatLng(destinationPosition!.desLat!, destinationPosition.desLng!);
+  //
+  //   var directionDetailsInfo = await HelpersMethod.obtainDirectionDetails(originLatLng, destinationLatLng);
+  //
+  //   Navigator.pop(context);
+  //
+  //   print("These are points = ");
+  //   print(directionDetailsInfo!.e_points);
+  //
+  // }
 }

@@ -1,14 +1,12 @@
-import 'dart:ffi';
-
-import 'package:darwin_parking/models/Destination.dart';
-import 'package:darwin_parking/models/predicted_places.dart';
+import 'package:darwin_parking/models/destination_address.dart';
 import 'package:darwin_parking/services/dataHandle.dart';
 import 'package:darwin_parking/services/helpers_http.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../global/map_key.dart';
-
+import '../models/Destination.dart';
+import '../models/predicted_places.dart';
+import 'dialog.dart';
 
 
 class PlacePredictionTileDesign extends StatelessWidget
@@ -17,12 +15,22 @@ class PlacePredictionTileDesign extends StatelessWidget
 
   PlacePredictionTileDesign({this.predictedPlaces});
 
+
   getPlaceDirectionDetails(String? placeId, context) async
   {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ProgressDialog(
+        message: "Setting Up Location, Please wait...",
+      ),
+    );
 
     String placeDirectionDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey";
 
     var responseApi = await HelpersHttp.receiveRequest(placeDirectionDetailsUrl);
+
+
+    Navigator.pop(context);
 
     if(responseApi == "Error Occurred, Failed. No Response.")
     {
@@ -31,17 +39,15 @@ class PlacePredictionTileDesign extends StatelessWidget
 
     if(responseApi["status"] == "OK")
     {
-      Destination des = Destination();
-      des.desAddress = responseApi["result"]["name"];
-      des.desLat = responseApi["result"]["geometry"]["location"]["lat"];
-      des.desLng = responseApi["result"]["geometry"]["location"]["lng"];
-      // print(des.desAddress);
-      // print(des.desLat);
-      // print(des.desLng);
-      Provider.of<DataHandle>(context, listen: false).updateDestination(des);
-      Navigator.pop(context, "obtainedDestination");
-    }
+      Destination directions = Destination();
+      directions.desAddress = responseApi["result"]["name"];
+      directions.desLat = responseApi["result"]["geometry"]["location"]["lat"];
+      directions.desLng = responseApi["result"]["geometry"]["location"]["lng"];
 
+      Provider.of<DataHandle>(context, listen: false).updateDestination(directions);
+
+      Navigator.pop(context, "obtainedAddress");
+    }
   }
 
   @override
