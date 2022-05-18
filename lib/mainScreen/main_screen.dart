@@ -41,7 +41,12 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   List<Marker> myMarker = [];
   LocationPermission? _locationPermission;
   String readAddress = "";
-  var slotList = [];
+  var slotList = [
+    [1, 130.8423936, -12.4676708, 130.8450544, -12.4653242, 130.8412349, -12.4618881, 130.8384454, -12.4642347, 130.8423936, -12.4676708, 2],
+    [1, 130.8450544, -12.4653242, 130.8479726, -12.4622652, 130.8444107, -12.4589548, 130.8412349, -12.4618881, 130.8450544, -12.4653242, 2],
+    [1, 130.8384454, -12.4642347, 130.8412349, -12.4618881, 130.8365572, -12.4573205, 130.8338535, -12.4597929, 130.8384454, -12.4642347, 2],
+    [1, 130.8365572, -12.4573205, 130.8412349, -12.4618881, 130.8444107, -12.4589548, 130.8395612, -12.4544709, 130.8365572, -12.4573205, 2]
+  ];
   var noSlots = [0,0,0,0,0,0];
   //[availaible car, total car, avaible disable, total disable, available motor, total motor]
   String carText = "N/A";
@@ -50,7 +55,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   double zoneOpacity = 0.0;
   double bayOpacity = 0.0;
   String selectedZone = "";
-  String bayType ="N/A";
+  // String bayType ="N/A";
   String bayPrice="N/A";
   String bayOp ="N/A";
   String googleAPiKey = "AIzaSyBwLvb_stRaemyipPYsMLmCqNxxUqy3QAw";
@@ -90,7 +95,8 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   }
 
   getDirections() async {
-      locateUserPosition();
+      myBayVisiable(false);
+      // locateUserPosition();
       startLocation = LatLng(userPosition!.latitude, userPosition!.longitude);  
       //endLocation = LatLng(27.6688312, 85.3077329); 
       List<LatLng> polylineCoordinates = [];
@@ -152,24 +158,40 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         CameraPosition cameraPosition = CameraPosition(target:centralPointA, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
         myZoneVisible(true, "zone A");
+        setState(() {
+          bayPrice = "\$2.50 per hour";
+          bayOp = "Max 3 hours, Mon-Fri 8.00am-5.00pm";
+        });
         break;
       case 2:
         slotList = LocationData.zoneB;
         CameraPosition cameraPosition = CameraPosition(target:centralPointB, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
         myZoneVisible(true, "zone B");
+        setState(() {
+          bayPrice = "\$1.80 per hour";
+          bayOp = "Max 2 hours, Mon-Fri 8.00am-5.00pm";
+        });
         break;
       case 3:
         slotList = LocationData.zoneC;
         CameraPosition cameraPosition = CameraPosition(target:centralPointC, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
         myZoneVisible(true, "zone C");
+        setState(() {
+          bayPrice = "\$1.30 per hour";
+          bayOp = "All day (8.00am - 5.00pm)";
+        });
         break;
       case 4:
         slotList = LocationData.zoneD;
         CameraPosition cameraPosition = CameraPosition(target:centralPointD, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
         myZoneVisible(true, "zone D");
+        setState(() {
+          bayPrice = "Free";
+          bayOp = "All day (8.00am - 5.00pm)";
+        });
         break;
     }
     myPolygon();
@@ -206,26 +228,24 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   Set<Polygon> myPolygon() {
     Set<Polygon> polygonSet = {};
     noSlots = [0,0,0,0,0,0];
-
     setState(() {
       for (var i = 0; i < slotList.length; i++) {
-        var bay = slotList[i];
-        var el = bay[6];
+        var el = slotList[i];
         List<LatLng> polygon = [];
-        polygon.add(LatLng(el[1], el[0]));
-        polygon.add(LatLng(el[3], el[2]));
-        polygon.add(LatLng(el[5], el[4]));
-        polygon.add(LatLng(el[7], el[6]));
-        polygon.add(LatLng(el[9], el[8]));
+        polygon.add(LatLng(el[2].toDouble(), el[1].toDouble()));
+        polygon.add(LatLng(el[4].toDouble(), el[3].toDouble()));
+        polygon.add(LatLng(el[6].toDouble(), el[5].toDouble()));
+        polygon.add(LatLng(el[8].toDouble(), el[7].toDouble()));
+        polygon.add(LatLng(el[10].toDouble(), el[9].toDouble()));
 
         Color slotColor = Colors.transparent;
 
 
-        switch(bay[1].toInt()){
+        switch(el[11].toInt()){
           case 1:
           // for car
             slotColor = Colors.green;
-            if(bay[2].toInt()==0) {
+            if(el[0]==0) {
               noSlots[0] = noSlots[0] + 1;
             }
             noSlots[1] = noSlots[1] + 1;
@@ -233,7 +253,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
           case 2:
           //for disables
-            if(bay[2].toInt()==0) {
+            if(el[0]==0) {
               noSlots[2] = noSlots[2] + 1;
             }
             noSlots[3] = noSlots[3] + 1;
@@ -243,24 +263,19 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
           case 3:
           //for blue
             slotColor = Colors.blue;
-            if(bay[2].toInt()==0) {
+            if(el[0]==0) {
               noSlots[4] = noSlots[4] + 1;
             }
             noSlots[5] = noSlots[5] + 1;
             break;
         }
         polygonSet.add(Polygon(
-          // geodesic: false,
-          // visible: true,
-          polygonId: PolygonId(bay[0].toString()),
+          polygonId: PolygonId(i.toString()),
           points: polygon,
-          // consumeTapEvents: true,
-          onTap: myPolygonTap(bay[0]),
           strokeWidth: 2,
           fillColor: el[0] == 1 ? slotColor.withOpacity(0.6) : Colors.transparent,
           strokeColor: slotColor,
         ));
-
       }
 
       carText = noSlots[0].toString() + "/" + noSlots[1].toString();
@@ -270,6 +285,70 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
     return polygonSet;
   }
+
+  // Set<Polygon> myPolygon() {
+  //   Set<Polygon> polygonSet = {};
+  //   noSlots = [0,0,0,0,0,0];
+  //
+  //   setState(() {
+  //     for (var i = 0; i < slotList.length; i++) {
+  //       var bay = slotList[i];
+  //       var el = bay[6];
+  //       List<LatLng> polygon = [];
+  //       polygon.add(LatLng(el[1], el[0]));
+  //       polygon.add(LatLng(el[3], el[2]));
+  //       polygon.add(LatLng(el[5], el[4]));
+  //       polygon.add(LatLng(el[7], el[6]));
+  //       polygon.add(LatLng(el[9], el[8]));
+  //
+  //       Color slotColor = Colors.transparent;
+  //
+  //
+  //       switch(bay[1].toInt()){
+  //         case 1:
+  //         // for car
+  //           slotColor = Colors.green;
+  //           if(bay[2].toInt()==0) {
+  //             noSlots[0] = noSlots[0] + 1;
+  //           }
+  //           noSlots[1] = noSlots[1] + 1;
+  //           break;
+  //
+  //         case 2:
+  //         //for disables
+  //           if(bay[2].toInt()==0) {
+  //             noSlots[2] = noSlots[2] + 1;
+  //           }
+  //           noSlots[3] = noSlots[3] + 1;
+  //           slotColor = Colors.deepOrange;
+  //           break;
+  //
+  //         case 3:
+  //         //for blue
+  //           slotColor = Colors.blue;
+  //           if(bay[2].toInt()==0) {
+  //             noSlots[4] = noSlots[4] + 1;
+  //           }
+  //           noSlots[5] = noSlots[5] + 1;
+  //           break;
+  //       }
+  //       polygonSet.add(Polygon(
+  //         polygonId: PolygonId(bay[0].toString()),
+  //         points: polygon,
+  //         // consumeTapEvents: true,
+  //         onTap: myPolygonTap(bay[0]),
+  //         strokeWidth: 2,
+  //         fillColor: el[0] == 1 ? slotColor.withOpacity(0.6) : Colors.transparent,
+  //         strokeColor: slotColor,
+  //       ));
+  //     }
+  //
+  //     carText = noSlots[0].toString() + "/" + noSlots[1].toString();
+  //     disableText = noSlots[2].toString() + "/" + noSlots[3].toString();
+  //     motorText = noSlots[4].toString() + "/" + noSlots[5].toString();
+  //   });
+  //   return polygonSet;
+  // }
 
   _handleTap(LatLng tappedPoint) async {
     myZoneVisible(false, "");
@@ -446,7 +525,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
               child: Opacity(
                 opacity: zoneOpacity,
                 child: Container(
-                  height: searchBoxHeight,
+                  height: 280,
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     // borderRadius: BorderRadius.only(
@@ -670,6 +749,64 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                           )
                       ),
                     ),
+                    Container(
+                      // height: 50.0,
+                      margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      child:(
+                          Column(
+                              children: [
+                                const SizedBox(
+                                  height: 28.0,
+                                ),
+                                Row(
+                                  children: <Widget> [
+                                    const Text("Price:    ",
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        // color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: -1.0,
+                                        wordSpacing: 5.0,),
+                                    ),
+                                    Text(bayPrice),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 18.0,
+                                ),
+                                Row(
+                                  children: const <Widget> [
+                                    Text("Operating hours:",
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        // color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: -1.0,
+                                        wordSpacing: 5.0,),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Row(
+                                  children: <Widget> [
+                                    Text("     " + bayOp,
+                                      // style: TextStyle(
+                                      //   fontSize: 18.0,
+                                      //   // color: Colors.green,
+                                      //   fontWeight: FontWeight.bold,
+                                      //   letterSpacing: -1.0,
+                                      //   wordSpacing: 5.0,),
+                                    ),
+                                  ],
+                                ),
+
+
+                              ]
+                          )
+                      ),
+                    ),
                   ]),
 
                 )
@@ -721,7 +858,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                 child: Opacity(
                     opacity: bayOpacity,
                     child: Container(
-                      height: 300,
+                      height: 150,
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         // borderRadius: BorderRadius.only(
@@ -779,77 +916,77 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                         const SizedBox(
                           height: 25.0,
                         ),
-                        Container(
-                          // height: 50.0,
-                          margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-                          child:(
-                              Column(
-                                  children: [
-                                    Row(
-                                      children: <Widget> [
-                                        const Text("Bay Type: ",
-                                          style: TextStyle(
-                                            fontSize: 18.0,
-                                            // color: Colors.green,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: -1.0,
-                                            wordSpacing: 5.0,),
-                                        ),
-                                        Text(bayType),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 18.0,
-                                    ),
-                                    Row(
-                                      children: <Widget> [
-                                        const Text("Price:    ",
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                          // color: Colors.green,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: -1.0,
-                                          wordSpacing: 5.0,),
-                                      ),
-                                        Text(bayPrice),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 18.0,
-                                    ),
-                                    Row(
-                                      children: const <Widget> [
-                                        Text("Operating hours:",
-                                          style: TextStyle(
-                                            fontSize: 18.0,
-                                            // color: Colors.green,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: -1.0,
-                                            wordSpacing: 5.0,),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 5.0,
-                                    ),
-                                    Row(
-                                      children: <Widget> [
-                                        Text("     " + bayOp,
-                                          // style: TextStyle(
-                                          //   fontSize: 18.0,
-                                          //   // color: Colors.green,
-                                          //   fontWeight: FontWeight.bold,
-                                          //   letterSpacing: -1.0,
-                                          //   wordSpacing: 5.0,),
-                                        ),
-                                      ],
-                                    ),
-
-
-                                  ]
-                              )
-                          ),
-                        ),
+                        // Container(
+                        //   // height: 50.0,
+                        //   margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        //   child:(
+                        //       Column(
+                        //           children: [
+                        //             Row(
+                        //               children: <Widget> [
+                        //                 const Text("Bay Type: ",
+                        //                   style: TextStyle(
+                        //                     fontSize: 18.0,
+                        //                     // color: Colors.green,
+                        //                     fontWeight: FontWeight.bold,
+                        //                     letterSpacing: -1.0,
+                        //                     wordSpacing: 5.0,),
+                        //                 ),
+                        //                 Text(bayType),
+                        //               ],
+                        //             ),
+                        //             const SizedBox(
+                        //               height: 18.0,
+                        //             ),
+                        //             Row(
+                        //               children: <Widget> [
+                        //                 const Text("Price:    ",
+                        //                 style: TextStyle(
+                        //                   fontSize: 18.0,
+                        //                   // color: Colors.green,
+                        //                   fontWeight: FontWeight.bold,
+                        //                   letterSpacing: -1.0,
+                        //                   wordSpacing: 5.0,),
+                        //               ),
+                        //                 Text(bayPrice),
+                        //               ],
+                        //             ),
+                        //             const SizedBox(
+                        //               height: 18.0,
+                        //             ),
+                        //             Row(
+                        //               children: const <Widget> [
+                        //                 Text("Operating hours:",
+                        //                   style: TextStyle(
+                        //                     fontSize: 18.0,
+                        //                     // color: Colors.green,
+                        //                     fontWeight: FontWeight.bold,
+                        //                     letterSpacing: -1.0,
+                        //                     wordSpacing: 5.0,),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //             const SizedBox(
+                        //               height: 5.0,
+                        //             ),
+                        //             Row(
+                        //               children: <Widget> [
+                        //                 Text("     " + bayOp,
+                        //                   // style: TextStyle(
+                        //                   //   fontSize: 18.0,
+                        //                   //   // color: Colors.green,
+                        //                   //   fontWeight: FontWeight.bold,
+                        //                   //   letterSpacing: -1.0,
+                        //                   //   wordSpacing: 5.0,),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //
+                        //
+                        //           ]
+                        //       )
+                        //   ),
+                        // ),
                       ]),
 
                     )
