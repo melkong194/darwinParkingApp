@@ -42,10 +42,10 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   LocationPermission? _locationPermission;
   String readAddress = "";
   var slotList = [
-    [1, 130.8423936, -12.4676708, 130.8450544, -12.4653242, 130.8412349, -12.4618881, 130.8384454, -12.4642347, 130.8423936, -12.4676708, 2],
-    [1, 130.8450544, -12.4653242, 130.8479726, -12.4622652, 130.8444107, -12.4589548, 130.8412349, -12.4618881, 130.8450544, -12.4653242, 2],
-    [1, 130.8384454, -12.4642347, 130.8412349, -12.4618881, 130.8365572, -12.4573205, 130.8338535, -12.4597929, 130.8384454, -12.4642347, 2],
-    [1, 130.8365572, -12.4573205, 130.8412349, -12.4618881, 130.8444107, -12.4589548, 130.8395612, -12.4544709, 130.8365572, -12.4573205, 2]
+    [0, 130.8423936, -12.4676708, 130.8450544, -12.4653242, 130.8412349, -12.4618881, 130.8384454, -12.4642347, 130.8423936, -12.4676708, 2],
+    [0, 130.8450544, -12.4653242, 130.8479726, -12.4622652, 130.8444107, -12.4589548, 130.8412349, -12.4618881, 130.8450544, -12.4653242, 2],
+    [0, 130.8384454, -12.4642347, 130.8412349, -12.4618881, 130.8365572, -12.4573205, 130.8338535, -12.4597929, 130.8384454, -12.4642347, 2],
+    [0, 130.8365572, -12.4573205, 130.8412349, -12.4618881, 130.8444107, -12.4589548, 130.8395612, -12.4544709, 130.8365572, -12.4573205, 2]
   ];
   var noSlots = [0,0,0,0,0,0];
   //[availaible car, total car, avaible disable, total disable, available motor, total motor]
@@ -858,7 +858,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                 child: Opacity(
                     opacity: bayOpacity,
                     child: Container(
-                      height: 150,
+                      height: 210,
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         // borderRadius: BorderRadius.only(
@@ -903,6 +903,68 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                         const SizedBox(
                           height: 15.0,
                         ),
+                      Container(
+                          padding:
+                          const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                          child:
+                          Row(textDirection: TextDirection.rtl, children: <Widget>[
+                            Expanded(
+                              child: Material(
+                                child: TextField(
+                                  onTap: () async {
+                                    var res = await Navigator.push(context, MaterialPageRoute(builder: (c)=> SearchPlacesScreen()));
+                                    setState(() {
+                                      if(res == "obtainedAddress"){
+                                          Destination  des = Provider.of<DataHandle>(context, listen: false).destination!;
+                                         LatLng point = LatLng(des.desLat!,des.desLng!);
+                                         myMarker = [];
+                                         myMarker.add(
+                                             Marker(
+                                             markerId: const MarkerId("desired destination"),
+                                          position: point));
+                                          CameraPosition cameraPosition = CameraPosition(target:point, zoom: 18);
+                                          newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+                                      }
+                                    });
+                                    },
+                                  readOnly: true,
+                                  // textInputAction: TextInputAction.search,
+                                  decoration: InputDecoration(
+                                    hintText: Provider.of<DataHandle>(context, listen: false).destination != null? (Provider.of<DataHandle>(context, listen: false).destination!.desAddress!).substring(0,20) + "..." : "Where do you go?",
+                                    hintStyle: const TextStyle(
+                                        color: Colors.grey, fontSize: 18.0),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                    ),
+                                    // contentPadding:
+                                    // const EdgeInsets.only(left: 15.0, top: 15.0),
+                                    // suffixIcon: Container(
+                                    //   margin: const EdgeInsets.all(1),
+                                    //   // height: 58,
+                                    //   width: 50,
+                                    //   decoration: const BoxDecoration(
+                                    //     border: Border(
+                                    //       left: BorderSide(
+                                    //         color: Colors.black54,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    //   child: IconButton(
+                                    //     icon: const Icon(Icons.search_rounded),
+                                    //     iconSize: 30.0,
+                                    //     color: Colors.black54,
+                                    //     onPressed: () {},
+                                    //   ),
+                                    // )
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]),
+                        ),
+                        const SizedBox(
+                          height: 25.0,
+                        ),
                         ElevatedButton(
                           child: const Text(
                             "Direction Path",
@@ -913,9 +975,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                               textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
                           ),
                         ),
-                        const SizedBox(
-                          height: 25.0,
-                        ),
+
                         // Container(
                         //   // height: 50.0,
                         //   margin: const EdgeInsets.only(left: 10.0, right: 10.0),
