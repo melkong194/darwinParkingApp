@@ -126,7 +126,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
       myMarker.add(Marker( //add start location marker
         markerId: MarkerId(startLocation.toString()),
         position: startLocation, //position of marker
-        infoWindow: InfoWindow( //popup info
+        infoWindow: const InfoWindow( //popup info
           title: 'Destination Point ',
           snippet: 'Destination Marker',
         ),
@@ -199,7 +199,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   myPolygonTap(id){
     print(id);
     if(id != null) {
-      myBayVisiable(true);
+
     }
   }
 
@@ -273,7 +273,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
   _handleTap(LatLng tappedPoint) async {
     myZoneVisible(false, "");
-    myBayVisiable(false);
+    myBayVisiable(true);
     LatLng desLatLng = tappedPoint;
     endLocation = tappedPoint;
     setState(() {
