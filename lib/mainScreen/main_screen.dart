@@ -96,7 +96,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
   getDirections() async {
       myBayVisiable(false);
-      // locateUserPosition();
+      await locateUserPosition();
       startLocation = LatLng(userPosition!.latitude, userPosition!.longitude);  
       //endLocation = LatLng(27.6688312, 85.3077329); 
       List<LatLng> polylineCoordinates = [];
