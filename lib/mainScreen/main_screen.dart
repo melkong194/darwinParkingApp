@@ -59,8 +59,8 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   String bayPrice="N/A";
   String bayOp ="N/A";
   String googleAPiKey = "AIzaSyBwLvb_stRaemyipPYsMLmCqNxxUqy3QAw";
-  LatLng startLocation = LatLng(-12.4449168,130.8475173);  
-  LatLng endLocation = LatLng(-12.4625499,130.8428557); 
+  LatLng startLocation = const LatLng(-12.4449168,130.8475173);
+  LatLng endLocation = const LatLng(-12.4625499,130.8428557);
   PolylinePoints polylinePoints = PolylinePoints();
   Map<PolylineId, Polyline> polylines = {}; //polylines to show direction
 
@@ -88,7 +88,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     newLocation.userLng = latlngPosition.longitude;
     Provider.of<DataHandle>(context, listen: false).updateUserLocation(newLocation);
     setState(() {
-        myMarker.add(Marker(markerId: MarkerId('My Location'),
+        myMarker.add(Marker(markerId: const MarkerId('My Location'),
             position: LatLng(userPosition!.latitude ?? 0.0, userPosition!.longitude ?? 0.0)
         ));
       });
@@ -120,7 +120,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   }
 
   addPolyLine(List<LatLng> polylineCoordinates) {
-    PolylineId id = PolylineId("poly");
+    PolylineId id = const PolylineId("poly");
     Polyline polyline = Polyline(
       polylineId: id,
       color: Colors.lightBlue,
@@ -382,7 +382,15 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     newDes.desLng = dlong;
     Provider.of<DataHandle>(context, listen: false).updateDestination(newDes);
   }
-
+  
+  List<DropdownMenuItem<int>> listDrop = [];
+  void loadDropList(){
+    listDrop = [];
+    listDrop.add(new DropdownMenuItem(child: new Text('Zone A'), value: 1,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Zone B'), value: 2,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Zone C'), value: 3,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Zone D'), value: 4,));
+  }
 
   @override
   void initState()
@@ -393,6 +401,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    loadDropList();
     return Scaffold(
       key: sKey,
       drawer: Container(
@@ -567,115 +576,6 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                         ),
                       ]),
                     ),
-                    //     controller: tabController,
-                    //     controller: tabController,
-                    //     controller: tabController
-                    // const SizedBox(
-                    //   height: 15.0,
-                    // ),
-                    // Container(
-                    //   padding:
-                    //   const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                    //   child:
-                    //   Row(textDirection: TextDirection.rtl, children: <Widget>[
-                    //     Container(
-                    //       // margin: const EdgeInsets.all(1),
-                    //         height: 50,
-                    //         width: 50,
-                    //         decoration: BoxDecoration(
-                    //             color: Colors.black,
-                    //             borderRadius:
-                    //             const BorderRadius.all(Radius.circular(2.0)),
-                    //             border: Border.all(
-                    //               color: Colors.black54, // Set border color
-                    //             ),
-                    //             boxShadow: const [
-                    //               BoxShadow(
-                    //                   blurRadius: 0,
-                    //                   color: Colors.grey,
-                    //                   offset: Offset(1, 1))
-                    //             ] // Make rounded corner of border
-                    //         ),
-                    //         child: Material(
-                    //           child: IconButton(
-                    //             // icon: const Icon(Icons.location_on_outlined),
-                    //             icon:
-                    //             const Icon(Icons.location_searching_outlined),
-                    //             iconSize: 25.0,
-                    //             color: Colors.black54,
-                    //             onPressed: locateUserPosition,
-                    //           ),
-                    //         )),
-                    //     const SizedBox(
-                    //       width: 30.0,
-                    //     ),
-                    //     Expanded(
-                    //       child: Material(
-                    //         child: TextField(
-                    //           onTap: () async {
-                    //             var res = await Navigator.push(context, MaterialPageRoute(builder: (c)=> SearchPlacesScreen()));
-                    //             setState(() {
-                    //               if(res == "obtainedAddress"){
-                    //                   Destination  des = Provider.of<DataHandle>(context, listen: false).destination!;
-                    //                  LatLng point = LatLng(des.desLat!,des.desLng!);
-                    //                  myMarker = [];
-                    //                  myMarker.add(
-                    //                      Marker(
-                    //                      markerId: const MarkerId("desired destination"),
-                    //                   position: point));
-                    //                   CameraPosition cameraPosition = CameraPosition(target:point, zoom: 18);
-                    //                   newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-                    //               }
-                    //             });
-                    //             },
-                    //           readOnly: true,
-                    //           // textInputAction: TextInputAction.search,
-                    //           decoration: InputDecoration(
-                    //             hintText: Provider.of<DataHandle>(context, listen: false).destination != null? (Provider.of<DataHandle>(context, listen: false).destination!.desAddress!).substring(0,20) + "..." : "Where do you go?",
-                    //             hintStyle: const TextStyle(
-                    //                 color: Colors.grey, fontSize: 18.0),
-                    //             border: OutlineInputBorder(
-                    //               borderRadius: BorderRadius.circular(4.0),
-                    //             ),
-                    //             // contentPadding:
-                    //             // const EdgeInsets.only(left: 15.0, top: 15.0),
-                    //             // suffixIcon: Container(
-                    //             //   margin: const EdgeInsets.all(1),
-                    //             //   // height: 58,
-                    //             //   width: 50,
-                    //             //   decoration: const BoxDecoration(
-                    //             //     border: Border(
-                    //             //       left: BorderSide(
-                    //             //         color: Colors.black54,
-                    //             //       ),
-                    //             //     ),
-                    //             //   ),
-                    //             //   child: IconButton(
-                    //             //     icon: const Icon(Icons.search_rounded),
-                    //             //     iconSize: 30.0,
-                    //             //     color: Colors.black54,
-                    //             //     onPressed: () {},
-                    //             //   ),
-                    //             // )
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ]),
-                    // ),
-                    // const SizedBox(
-                    //   height: 15.0,
-                    // ),
-                    // ElevatedButton(
-                    //   child: const Text(
-                    //     "Direction Path",
-                    //   ),
-                    //   onPressed: directPaths,
-                    //   style: ElevatedButton.styleFrom(
-                    //       primary: const Color.fromRGBO(255, 87, 51, 1),
-                    //       textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
-                    //   ),
-                    // ),
                     Container(
                       height: 50.0,
                       margin: const EdgeInsets.only(left: 10.0, right: 10.0),
@@ -813,23 +713,23 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
               )
             ),
           ),
-          Positioned(
-            top: 30,
-            left: 14,
-            child: GestureDetector(
-              onTap: ()
-              {
-                sKey.currentState!.openDrawer();
-              },
-              child: const CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.menu,
-                  color: Colors.blue,
-                ),
-              ),
-            ),
-          ),
+          // Positioned(
+          //   top: 30,
+          //   left: 14,
+          //   child: GestureDetector(
+          //     onTap: ()
+          //     {
+          //       sKey.currentState!.openDrawer();
+          //     },
+          //     child: const CircleAvatar(
+          //       backgroundColor: Colors.white,
+          //       child: Icon(
+          //         Icons.menu,
+          //         color: Colors.blue,
+          //       ),
+          //     ),
+          //   ),
+          // ),
           Positioned(
             top: 30,
             right: 14,
@@ -1053,60 +953,35 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                 )
             ),
           ),
+          Positioned(
+            top: 30,
+            left: 14,
+            child: Container(
+              width: 180,
+              height: 45,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                // borderRadius: BorderRadius.only(
+                //   topRight: Radius.circular(20),
+                //   topLeft: Radius.circular(20),
+                // ),
+              ),
+              child: new DropdownButton(
+                items: listDrop,
+                hint: Text(
+                  "Select a Zone",
+                  style: TextStyle(
+                  color: Colors.indigo,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.none),
+                  ),
+                onChanged: (value) => updateZone(value),)
+            ),
+          ),
         ],
       ),
     );
-
-        // Scaffold(
-        //   body: TabBarView(
-        //     physics: const NeverScrollableScrollPhysics(),
-        //     controller: tabController,
-        //     children: const [
-        //       HomeTabPage(),
-        //       AccountTabPage(),
-        //     ],
-        //   ),
-        //   bottomNavigationBar: BottomNavigationBar(
-        //     items: const [
-        //       BottomNavigationBarItem(
-        //         icon: Icon(Icons.alt_route),
-        //         label: "Parking",
-        //       ),
-        //
-        //       BottomNavigationBarItem(
-        //         icon: Icon(Icons.person),
-        //         label: "Account",
-        //       ),
-        //
-        //     ],
-        //     unselectedItemColor: Colors.white54,
-        //     selectedItemColor: Colors.white,
-        //     backgroundColor: Colors.black,
-        //     type: BottomNavigationBarType.fixed,
-        //     selectedLabelStyle: const TextStyle(fontSize: 14),
-        //     showUnselectedLabels: true,
-        //     currentIndex: selectedIndex,
-        //     onTap: onItemClicked,
-        //   ),
-        //
-        // )
-        ;
   }
-
-  // Future<void> drawPolyLineFromOriginToDestination() async
-  // {
-  //   var originPosition = Provider.of<DataHandle>(context, listen: false).userLocation;
-  //   var destinationPosition = Provider.of<DataHandle>(context, listen: false).destination;
-  //
-  //   var originLatLng = LatLng(originPosition!.userLat!, originPosition.userLng!);
-  //   var destinationLatLng = LatLng(destinationPosition!.desLat!, destinationPosition.desLng!);
-  //
-  //   var directionDetailsInfo = await HelpersMethod.obtainDirectionDetails(originLatLng, destinationLatLng);
-  //
-  //   Navigator.pop(context);
-  //
-  //   print("These are points = ");
-  //   print(directionDetailsInfo!.e_points);
-  //
-  // }
 }
+
