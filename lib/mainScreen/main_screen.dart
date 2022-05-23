@@ -369,7 +369,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         )
       );
     });
-
+    directPaths();
     String add = await HelpersMethod.positionToAddress(desLatLng);
     UpdateDestination(add, desLatLng.latitude, desLatLng.longitude);
   }
@@ -748,211 +748,211 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
             ),
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: AnimatedSize(
-                curve: Curves.easeIn,
-                duration: const Duration(milliseconds: 120),
-                child: Opacity(
-                    opacity: bayOpacity,
-                    child: Container(
-                      height: 210,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        // borderRadius: BorderRadius.only(
-                        //   topRight: Radius.circular(20),
-                        //   topLeft: Radius.circular(20),
-                        // ),
-                      ),
-
-                      child:
-                      Column(children: [
-                        Container(
-                          height: 40,
-                          width: double.infinity,
-                          // color: const Color.fromRGBO(21, 34, 56, 1),
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(21, 34, 56, 1),
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(4),
-                              topLeft: Radius.circular(4),
-                            ),
-                          ),
-                          child: Row(children: const [
-                            SizedBox(
-                              width: 7.0,
-                            ),
-                            Icon(
-                              Icons.add_location_alt_outlined,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              width: 15.0,
-                            ),
-                            Text(
-                              "Direction Path",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  decoration: TextDecoration.none),
-                            ),
-                          ]),
-                        ),
-                        const SizedBox(
-                          height: 15.0,
-                        ),
-                      Container(
-                          padding:
-                          const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                          child:
-                          Row(textDirection: TextDirection.rtl, children: <Widget>[
-                            Expanded(
-                              child: Material(
-                                child: TextField(
-                                  onTap: () async {
-                                    var res = await Navigator.push(context, MaterialPageRoute(builder: (c)=> SearchPlacesScreen()));
-                                    setState(() {
-                                      if(res == "obtainedAddress"){
-                                          Destination  des = Provider.of<DataHandle>(context, listen: false).destination!;
-                                         LatLng point = LatLng(des.desLat!,des.desLng!);
-                                         myMarker = [];
-                                         myMarker.add(
-                                             Marker(
-                                             markerId: const MarkerId("desired destination"),
-                                          position: point));
-                                          CameraPosition cameraPosition = CameraPosition(target:point, zoom: 18);
-                                          newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-                                      }
-                                    });
-                                    },
-                                  readOnly: true,
-                                  // textInputAction: TextInputAction.search,
-                                  decoration: InputDecoration(
-                                    hintText: Provider.of<DataHandle>(context, listen: false).destination != null? (Provider.of<DataHandle>(context, listen: false).destination!.desAddress!).substring(0,20) + "..." : "Where do you go?",
-                                    hintStyle: const TextStyle(
-                                        color: Colors.grey, fontSize: 18.0),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(4.0),
-                                    ),
-                                    // contentPadding:
-                                    // const EdgeInsets.only(left: 15.0, top: 15.0),
-                                    // suffixIcon: Container(
-                                    //   margin: const EdgeInsets.all(1),
-                                    //   // height: 58,
-                                    //   width: 50,
-                                    //   decoration: const BoxDecoration(
-                                    //     border: Border(
-                                    //       left: BorderSide(
-                                    //         color: Colors.black54,
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    //   child: IconButton(
-                                    //     icon: const Icon(Icons.search_rounded),
-                                    //     iconSize: 30.0,
-                                    //     color: Colors.black54,
-                                    //     onPressed: () {},
-                                    //   ),
-                                    // )
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ]),
-                        ),
-                        const SizedBox(
-                          height: 25.0,
-                        ),
-                        ElevatedButton(
-                          child: const Text(
-                            "Direction Path",
-                          ),
-                          onPressed: directPaths,
-                          style: ElevatedButton.styleFrom(
-                              primary: const Color.fromRGBO(255, 87, 51, 1),
-                              textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
-                          ),
-                        ),
-
-                        // Container(
-                        //   // height: 50.0,
-                        //   margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-                        //   child:(
-                        //       Column(
-                        //           children: [
-                        //             Row(
-                        //               children: <Widget> [
-                        //                 const Text("Bay Type: ",
-                        //                   style: TextStyle(
-                        //                     fontSize: 18.0,
-                        //                     // color: Colors.green,
-                        //                     fontWeight: FontWeight.bold,
-                        //                     letterSpacing: -1.0,
-                        //                     wordSpacing: 5.0,),
-                        //                 ),
-                        //                 Text(bayType),
-                        //               ],
-                        //             ),
-                        //             const SizedBox(
-                        //               height: 18.0,
-                        //             ),
-                        //             Row(
-                        //               children: <Widget> [
-                        //                 const Text("Price:    ",
-                        //                 style: TextStyle(
-                        //                   fontSize: 18.0,
-                        //                   // color: Colors.green,
-                        //                   fontWeight: FontWeight.bold,
-                        //                   letterSpacing: -1.0,
-                        //                   wordSpacing: 5.0,),
-                        //               ),
-                        //                 Text(bayPrice),
-                        //               ],
-                        //             ),
-                        //             const SizedBox(
-                        //               height: 18.0,
-                        //             ),
-                        //             Row(
-                        //               children: const <Widget> [
-                        //                 Text("Operating hours:",
-                        //                   style: TextStyle(
-                        //                     fontSize: 18.0,
-                        //                     // color: Colors.green,
-                        //                     fontWeight: FontWeight.bold,
-                        //                     letterSpacing: -1.0,
-                        //                     wordSpacing: 5.0,),
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //             const SizedBox(
-                        //               height: 5.0,
-                        //             ),
-                        //             Row(
-                        //               children: <Widget> [
-                        //                 Text("     " + bayOp,
-                        //                   // style: TextStyle(
-                        //                   //   fontSize: 18.0,
-                        //                   //   // color: Colors.green,
-                        //                   //   fontWeight: FontWeight.bold,
-                        //                   //   letterSpacing: -1.0,
-                        //                   //   wordSpacing: 5.0,),
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //
-                        //
-                        //           ]
-                        //       )
-                        //   ),
-                        // ),
-                      ]),
-
-                    )
-                )
-            ),
-          ),
+          // Positioned(
+          //   bottom: 0,
+          //   left: 0,
+          //   right: 0,
+          //   child: AnimatedSize(
+          //       curve: Curves.easeIn,
+          //       duration: const Duration(milliseconds: 120),
+          //       child: Opacity(
+          //           opacity: bayOpacity,
+          //           child: Container(
+          //             height: 210,
+          //             decoration: const BoxDecoration(
+          //               color: Colors.white,
+          //               // borderRadius: BorderRadius.only(
+          //               //   topRight: Radius.circular(20),
+          //               //   topLeft: Radius.circular(20),
+          //               // ),
+          //             ),
+          //
+          //             child:
+          //             Column(children: [
+          //               Container(
+          //                 height: 40,
+          //                 width: double.infinity,
+          //                 // color: const Color.fromRGBO(21, 34, 56, 1),
+          //                 decoration: const BoxDecoration(
+          //                   color: Color.fromRGBO(21, 34, 56, 1),
+          //                   borderRadius: BorderRadius.only(
+          //                     topRight: Radius.circular(4),
+          //                     topLeft: Radius.circular(4),
+          //                   ),
+          //                 ),
+          //                 child: Row(children: const [
+          //                   SizedBox(
+          //                     width: 7.0,
+          //                   ),
+          //                   Icon(
+          //                     Icons.add_location_alt_outlined,
+          //                     color: Colors.white,
+          //                   ),
+          //                   SizedBox(
+          //                     width: 15.0,
+          //                   ),
+          //                   Text(
+          //                     "Direction Path",
+          //                     style: TextStyle(
+          //                         color: Colors.white,
+          //                         fontSize: 16,
+          //                         decoration: TextDecoration.none),
+          //                   ),
+          //                 ]),
+          //               ),
+          //               const SizedBox(
+          //                 height: 15.0,
+          //               ),
+          //             Container(
+          //                 padding:
+          //                 const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+          //                 child:
+          //                 Row(textDirection: TextDirection.rtl, children: <Widget>[
+          //                   Expanded(
+          //                     child: Material(
+          //                       child: TextField(
+          //                         onTap: () async {
+          //                           var res = await Navigator.push(context, MaterialPageRoute(builder: (c)=> SearchPlacesScreen()));
+          //                           setState(() {
+          //                             if(res == "obtainedAddress"){
+          //                                 Destination  des = Provider.of<DataHandle>(context, listen: false).destination!;
+          //                                LatLng point = LatLng(des.desLat!,des.desLng!);
+          //                                myMarker = [];
+          //                                myMarker.add(
+          //                                    Marker(
+          //                                    markerId: const MarkerId("desired destination"),
+          //                                 position: point));
+          //                                 CameraPosition cameraPosition = CameraPosition(target:point, zoom: 18);
+          //                                 newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+          //                             }
+          //                           });
+          //                           },
+          //                         readOnly: true,
+          //                         // textInputAction: TextInputAction.search,
+          //                         decoration: InputDecoration(
+          //                           hintText: Provider.of<DataHandle>(context, listen: false).destination != null? (Provider.of<DataHandle>(context, listen: false).destination!.desAddress!).substring(0,20) + "..." : "Where do you go?",
+          //                           hintStyle: const TextStyle(
+          //                               color: Colors.grey, fontSize: 18.0),
+          //                           border: OutlineInputBorder(
+          //                             borderRadius: BorderRadius.circular(4.0),
+          //                           ),
+          //                           // contentPadding:
+          //                           // const EdgeInsets.only(left: 15.0, top: 15.0),
+          //                           // suffixIcon: Container(
+          //                           //   margin: const EdgeInsets.all(1),
+          //                           //   // height: 58,
+          //                           //   width: 50,
+          //                           //   decoration: const BoxDecoration(
+          //                           //     border: Border(
+          //                           //       left: BorderSide(
+          //                           //         color: Colors.black54,
+          //                           //       ),
+          //                           //     ),
+          //                           //   ),
+          //                           //   child: IconButton(
+          //                           //     icon: const Icon(Icons.search_rounded),
+          //                           //     iconSize: 30.0,
+          //                           //     color: Colors.black54,
+          //                           //     onPressed: () {},
+          //                           //   ),
+          //                           // )
+          //                         ),
+          //                       ),
+          //                     ),
+          //                   ),
+          //                 ]),
+          //               ),
+          //               const SizedBox(
+          //                 height: 25.0,
+          //               ),
+          //               ElevatedButton(
+          //                 child: const Text(
+          //                   "Direction Path",
+          //                 ),
+          //                 onPressed: directPaths,
+          //                 style: ElevatedButton.styleFrom(
+          //                     primary: const Color.fromRGBO(255, 87, 51, 1),
+          //                     textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+          //                 ),
+          //               ),
+          //
+          //               // Container(
+          //               //   // height: 50.0,
+          //               //   margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+          //               //   child:(
+          //               //       Column(
+          //               //           children: [
+          //               //             Row(
+          //               //               children: <Widget> [
+          //               //                 const Text("Bay Type: ",
+          //               //                   style: TextStyle(
+          //               //                     fontSize: 18.0,
+          //               //                     // color: Colors.green,
+          //               //                     fontWeight: FontWeight.bold,
+          //               //                     letterSpacing: -1.0,
+          //               //                     wordSpacing: 5.0,),
+          //               //                 ),
+          //               //                 Text(bayType),
+          //               //               ],
+          //               //             ),
+          //               //             const SizedBox(
+          //               //               height: 18.0,
+          //               //             ),
+          //               //             Row(
+          //               //               children: <Widget> [
+          //               //                 const Text("Price:    ",
+          //               //                 style: TextStyle(
+          //               //                   fontSize: 18.0,
+          //               //                   // color: Colors.green,
+          //               //                   fontWeight: FontWeight.bold,
+          //               //                   letterSpacing: -1.0,
+          //               //                   wordSpacing: 5.0,),
+          //               //               ),
+          //               //                 Text(bayPrice),
+          //               //               ],
+          //               //             ),
+          //               //             const SizedBox(
+          //               //               height: 18.0,
+          //               //             ),
+          //               //             Row(
+          //               //               children: const <Widget> [
+          //               //                 Text("Operating hours:",
+          //               //                   style: TextStyle(
+          //               //                     fontSize: 18.0,
+          //               //                     // color: Colors.green,
+          //               //                     fontWeight: FontWeight.bold,
+          //               //                     letterSpacing: -1.0,
+          //               //                     wordSpacing: 5.0,),
+          //               //                 ),
+          //               //               ],
+          //               //             ),
+          //               //             const SizedBox(
+          //               //               height: 5.0,
+          //               //             ),
+          //               //             Row(
+          //               //               children: <Widget> [
+          //               //                 Text("     " + bayOp,
+          //               //                   // style: TextStyle(
+          //               //                   //   fontSize: 18.0,
+          //               //                   //   // color: Colors.green,
+          //               //                   //   fontWeight: FontWeight.bold,
+          //               //                   //   letterSpacing: -1.0,
+          //               //                   //   wordSpacing: 5.0,),
+          //               //                 ),
+          //               //               ],
+          //               //             ),
+          //               //
+          //               //
+          //               //           ]
+          //               //       )
+          //               //   ),
+          //               // ),
+          //             ]),
+          //
+          //           )
+          //       )
+          //   ),
+          // ),
           Positioned(
             top: 30,
             left: 14,
