@@ -41,6 +41,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   List<Marker> myMarker = [];
   LocationPermission? _locationPermission;
   String readAddress = "";
+  var selectedValue = null;
   var slotList = [
     [0, 130.8423936, -12.4676708, 130.8450544, -12.4653242, 130.8412349, -12.4618881, 130.8384454, -12.4642347, 130.8423936, -12.4676708, 2],
     [0, 130.8450544, -12.4653242, 130.8479726, -12.4622652, 130.8444107, -12.4589548, 130.8412349, -12.4618881, 130.8450544, -12.4653242, 2],
@@ -381,6 +382,14 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     newDes.desLat= dlat;
     newDes.desLng = dlong;
     Provider.of<DataHandle>(context, listen: false).updateDestination(newDes);
+  }
+
+  changeDropdownOpt(value){
+    setState(() {
+      selectedValue = value;
+      updateZone(value);
+    });
+
   }
 
   List<DropdownMenuItem<int>> listDrop = [];
@@ -969,7 +978,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                   //   topLeft: Radius.circular(20),
                   // ),
                 ),
-                child: new DropdownButton(
+                child: DropdownButton(
                   items: listDrop,
                   hint: Text(
                     "Select a Zone",
@@ -979,7 +988,10 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                         fontWeight: FontWeight.w600,
                         decoration: TextDecoration.none),
                   ),
-                  onChanged: (value) => updateZone(value),)
+                  onChanged: (value) =>
+                    changeDropdownOpt(value),
+                  value: selectedValue,
+                ),
             ),
           ),
         ],
