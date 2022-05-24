@@ -88,35 +88,35 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     newLocation.userLng = latlngPosition.longitude;
     Provider.of<DataHandle>(context, listen: false).updateUserLocation(newLocation);
     setState(() {
-        myMarker.add(Marker(markerId: const MarkerId('My Location'),
-            position: LatLng(userPosition!.latitude ?? 0.0, userPosition!.longitude ?? 0.0)
-        ));
-      });
+      myMarker.add(Marker(markerId: const MarkerId('My Location'),
+          position: LatLng(userPosition!.latitude ?? 0.0, userPosition!.longitude ?? 0.0)
+      ));
+    });
   }
 
   getDirections() async {
-      myBayVisiable(false);
-      await locateUserPosition();
-      startLocation = LatLng(userPosition!.latitude, userPosition!.longitude);  
-      //endLocation = LatLng(27.6688312, 85.3077329); 
-      List<LatLng> polylineCoordinates = [];
-     
-      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-          googleAPiKey,
-          PointLatLng(startLocation.latitude, startLocation.longitude),
-          PointLatLng(endLocation.latitude, endLocation.longitude),
-          travelMode: TravelMode.driving,
-      );
+    myBayVisiable(false);
+    await locateUserPosition();
+    startLocation = LatLng(userPosition!.latitude, userPosition!.longitude);
+    //endLocation = LatLng(27.6688312, 85.3077329);
+    List<LatLng> polylineCoordinates = [];
 
-      if (result.points.isNotEmpty) {
-            result.points.forEach((PointLatLng point) {
-                polylineCoordinates.add(LatLng(point.latitude, point.longitude));                
-            });            
-      } else {
-         print(result.errorMessage);
-      }
-      //print (polylineCoordinates);
-      addPolyLine(polylineCoordinates);
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      googleAPiKey,
+      PointLatLng(startLocation.latitude, startLocation.longitude),
+      PointLatLng(endLocation.latitude, endLocation.longitude),
+      travelMode: TravelMode.driving,
+    );
+
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    } else {
+      print(result.errorMessage);
+    }
+    //print (polylineCoordinates);
+    addPolyLine(polylineCoordinates);
   }
 
   addPolyLine(List<LatLng> polylineCoordinates) {
@@ -144,10 +144,10 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
   }
 
-  
+
   directPaths()
   {
-      getDirections(); //fetch direction polylines from Google API
+    getDirections(); //fetch direction polylines from Google API
   }
 
   updateZone(opt) {
@@ -358,18 +358,18 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     setState(() {
       myMarker = [];
       myMarker.add(
-        Marker(
-          markerId: MarkerId(tappedPoint.toString()),
-          position: tappedPoint,
-          draggable: true,
-          // icon:BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
-          onDragEnd: (dragEndPosition){
-            desLatLng = dragEndPosition;
-          }
-        )
+          Marker(
+              markerId: MarkerId(tappedPoint.toString()),
+              position: tappedPoint,
+              draggable: true,
+              // icon:BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+              onDragEnd: (dragEndPosition){
+                desLatLng = dragEndPosition;
+              }
+          )
       );
     });
-    directPaths();
+
     String add = await HelpersMethod.positionToAddress(desLatLng);
     UpdateDestination(add, desLatLng.latitude, desLatLng.longitude);
   }
@@ -382,7 +382,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     newDes.desLng = dlong;
     Provider.of<DataHandle>(context, listen: false).updateDestination(newDes);
   }
-  
+
   List<DropdownMenuItem<int>> listDrop = [];
   void loadDropList(){
     listDrop = [];
@@ -511,6 +511,9 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
             mapType: MapType.normal,
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
+            scrollGesturesEnabled: true,
+            compassEnabled: true,
+            rotateGesturesEnabled: true,
             zoomGesturesEnabled: true,
             zoomControlsEnabled: true,
             mapToolbarEnabled: false,
@@ -529,188 +532,188 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
             left: 0,
             right: 0,
             child: AnimatedSize(
-              curve: Curves.easeIn,
-              duration: const Duration(milliseconds: 120),
-              child: Opacity(
-                opacity: zoneOpacity,
-                child: Container(
-                  height: 280,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    // borderRadius: BorderRadius.only(
-                    //   topRight: Radius.circular(20),
-                    //   topLeft: Radius.circular(20),
-                    // ),
-                  ),
-
-                  child:
-                  Column(children: [
-                    Container(
-                      height: 40,
-                      width: double.infinity,
-                      // color: const Color.fromRGBO(21, 34, 56, 1),
+                curve: Curves.easeIn,
+                duration: const Duration(milliseconds: 120),
+                child: Opacity(
+                    opacity: zoneOpacity,
+                    child: Container(
+                      height: 280,
                       decoration: const BoxDecoration(
-                        color: Color.fromRGBO(21, 34, 56, 1),
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(4),
-                          topLeft: Radius.circular(4),
-                        ),
+                        color: Colors.white,
+                        // borderRadius: BorderRadius.only(
+                        //   topRight: Radius.circular(20),
+                        //   topLeft: Radius.circular(20),
+                        // ),
                       ),
-                      child: Row(children: [
-                        const SizedBox(
-                          width: 7.0,
-                        ),
-                        const Icon(
-                          Icons.add_location_alt_outlined,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(
-                          width: 15.0,
-                        ),
-                        Text(
-                          "Availabe parking bays from " + selectedZone,
-                          style: const TextStyle(
+
+                      child:
+                      Column(children: [
+                        Container(
+                          height: 40,
+                          width: double.infinity,
+                          // color: const Color.fromRGBO(21, 34, 56, 1),
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(21, 34, 56, 1),
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(4),
+                              topLeft: Radius.circular(4),
+                            ),
+                          ),
+                          child: Row(children: [
+                            const SizedBox(
+                              width: 7.0,
+                            ),
+                            const Icon(
+                              Icons.add_location_alt_outlined,
                               color: Colors.white,
-                              fontSize: 16,
-                              decoration: TextDecoration.none),
+                            ),
+                            const SizedBox(
+                              width: 15.0,
+                            ),
+                            Text(
+                              "Availabe parking bays from " + selectedZone,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  decoration: TextDecoration.none),
+                            ),
+                          ]),
+                        ),
+                        Container(
+                          height: 50.0,
+                          margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                          child:(
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: const <Widget> [
+                                    Text("Car",
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        // color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: -1.0,
+                                        wordSpacing: 5.0,),
+                                    ),
+                                    Spacer(),
+                                    Text("Disable",
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        // color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: -1.0,
+                                        wordSpacing: 5.0,),
+                                    ),
+                                    Spacer(),
+                                    Text("Motor",
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        // color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: -1.0,
+                                        wordSpacing: 5.0,),
+                                    ),
+                                  ]
+                              )
+                          ),
+                        ),
+                        Container(
+                          // height: 70.0,
+                          margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                          child:(
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget> [
+                                    // Text("car:",
+                                    //     style: TextStyle(
+                                    //       fontSize: 18.0,
+                                    //       color: Colors.green,
+                                    //       fontWeight: FontWeight.bold,
+                                    //       letterSpacing: -1.0,
+                                    //       wordSpacing: 5.0,),
+                                    // ),
+                                    const Icon(
+                                      Icons.local_taxi,
+                                      color: Colors.green,
+                                    ),
+                                    Text(carText),
+                                    const Spacer(),
+                                    const Icon(
+                                      Icons.wheelchair_pickup,
+                                      color: Colors.deepOrange,
+                                    ),
+                                    Text(disableText),
+                                    const Spacer(),
+                                    const Icon(
+                                      Icons.motorcycle_outlined,
+                                      color: Colors.blue,
+                                    ),
+                                    Text(motorText),
+                                  ]
+                              )
+                          ),
+                        ),
+                        Container(
+                          // height: 50.0,
+                          margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                          child:(
+                              Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 28.0,
+                                    ),
+                                    Row(
+                                      children: <Widget> [
+                                        const Text("Price:    ",
+                                          style: TextStyle(
+                                            fontSize: 18.0,
+                                            // color: Colors.green,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: -1.0,
+                                            wordSpacing: 5.0,),
+                                        ),
+                                        Text(bayPrice),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 18.0,
+                                    ),
+                                    Row(
+                                      children: const <Widget> [
+                                        Text("Operating hours:",
+                                          style: TextStyle(
+                                            fontSize: 18.0,
+                                            // color: Colors.green,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: -1.0,
+                                            wordSpacing: 5.0,),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Row(
+                                      children: <Widget> [
+                                        Text("     " + bayOp,
+                                          // style: TextStyle(
+                                          //   fontSize: 18.0,
+                                          //   // color: Colors.green,
+                                          //   fontWeight: FontWeight.bold,
+                                          //   letterSpacing: -1.0,
+                                          //   wordSpacing: 5.0,),
+                                        ),
+                                      ],
+                                    ),
+
+
+                                  ]
+                              )
+                          ),
                         ),
                       ]),
-                    ),
-                    Container(
-                      height: 50.0,
-                      margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child:(
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: const <Widget> [
-                                Text("Car",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    // color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: -1.0,
-                                    wordSpacing: 5.0,),
-                                ),
-                                Spacer(),
-                                Text("Disable",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    // color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: -1.0,
-                                    wordSpacing: 5.0,),
-                                ),
-                                Spacer(),
-                                Text("Motor",
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    // color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: -1.0,
-                                    wordSpacing: 5.0,),
-                                ),
-                              ]
-                          )
-                      ),
-                    ),
-                    Container(
-                      // height: 70.0,
-                      margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child:(
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget> [
-                                // Text("car:",
-                                //     style: TextStyle(
-                                //       fontSize: 18.0,
-                                //       color: Colors.green,
-                                //       fontWeight: FontWeight.bold,
-                                //       letterSpacing: -1.0,
-                                //       wordSpacing: 5.0,),
-                                // ),
-                                const Icon(
-                                  Icons.local_taxi,
-                                  color: Colors.green,
-                                ),
-                                Text(carText),
-                                const Spacer(),
-                                const Icon(
-                                  Icons.wheelchair_pickup,
-                                  color: Colors.deepOrange,
-                                ),
-                                Text(disableText),
-                                const Spacer(),
-                                const Icon(
-                                  Icons.motorcycle_outlined,
-                                  color: Colors.blue,
-                                ),
-                                Text(motorText),
-                              ]
-                          )
-                      ),
-                    ),
-                    Container(
-                      // height: 50.0,
-                      margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child:(
-                          Column(
-                              children: [
-                                const SizedBox(
-                                  height: 28.0,
-                                ),
-                                Row(
-                                  children: <Widget> [
-                                    const Text("Price:    ",
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        // color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: -1.0,
-                                        wordSpacing: 5.0,),
-                                    ),
-                                    Text(bayPrice),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 18.0,
-                                ),
-                                Row(
-                                  children: const <Widget> [
-                                    Text("Operating hours:",
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        // color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: -1.0,
-                                        wordSpacing: 5.0,),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Row(
-                                  children: <Widget> [
-                                    Text("     " + bayOp,
-                                      // style: TextStyle(
-                                      //   fontSize: 18.0,
-                                      //   // color: Colors.green,
-                                      //   fontWeight: FontWeight.bold,
-                                      //   letterSpacing: -1.0,
-                                      //   wordSpacing: 5.0,),
-                                    ),
-                                  ],
-                                ),
 
-
-                              ]
-                          )
-                      ),
-                    ),
-                  ]),
-
+                    )
                 )
-              )
             ),
           ),
           // Positioned(
@@ -748,235 +751,235 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
             ),
           ),
-          // Positioned(
-          //   bottom: 0,
-          //   left: 0,
-          //   right: 0,
-          //   child: AnimatedSize(
-          //       curve: Curves.easeIn,
-          //       duration: const Duration(milliseconds: 120),
-          //       child: Opacity(
-          //           opacity: bayOpacity,
-          //           child: Container(
-          //             height: 210,
-          //             decoration: const BoxDecoration(
-          //               color: Colors.white,
-          //               // borderRadius: BorderRadius.only(
-          //               //   topRight: Radius.circular(20),
-          //               //   topLeft: Radius.circular(20),
-          //               // ),
-          //             ),
-          //
-          //             child:
-          //             Column(children: [
-          //               Container(
-          //                 height: 40,
-          //                 width: double.infinity,
-          //                 // color: const Color.fromRGBO(21, 34, 56, 1),
-          //                 decoration: const BoxDecoration(
-          //                   color: Color.fromRGBO(21, 34, 56, 1),
-          //                   borderRadius: BorderRadius.only(
-          //                     topRight: Radius.circular(4),
-          //                     topLeft: Radius.circular(4),
-          //                   ),
-          //                 ),
-          //                 child: Row(children: const [
-          //                   SizedBox(
-          //                     width: 7.0,
-          //                   ),
-          //                   Icon(
-          //                     Icons.add_location_alt_outlined,
-          //                     color: Colors.white,
-          //                   ),
-          //                   SizedBox(
-          //                     width: 15.0,
-          //                   ),
-          //                   Text(
-          //                     "Direction Path",
-          //                     style: TextStyle(
-          //                         color: Colors.white,
-          //                         fontSize: 16,
-          //                         decoration: TextDecoration.none),
-          //                   ),
-          //                 ]),
-          //               ),
-          //               const SizedBox(
-          //                 height: 15.0,
-          //               ),
-          //             Container(
-          //                 padding:
-          //                 const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-          //                 child:
-          //                 Row(textDirection: TextDirection.rtl, children: <Widget>[
-          //                   Expanded(
-          //                     child: Material(
-          //                       child: TextField(
-          //                         onTap: () async {
-          //                           var res = await Navigator.push(context, MaterialPageRoute(builder: (c)=> SearchPlacesScreen()));
-          //                           setState(() {
-          //                             if(res == "obtainedAddress"){
-          //                                 Destination  des = Provider.of<DataHandle>(context, listen: false).destination!;
-          //                                LatLng point = LatLng(des.desLat!,des.desLng!);
-          //                                myMarker = [];
-          //                                myMarker.add(
-          //                                    Marker(
-          //                                    markerId: const MarkerId("desired destination"),
-          //                                 position: point));
-          //                                 CameraPosition cameraPosition = CameraPosition(target:point, zoom: 18);
-          //                                 newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-          //                             }
-          //                           });
-          //                           },
-          //                         readOnly: true,
-          //                         // textInputAction: TextInputAction.search,
-          //                         decoration: InputDecoration(
-          //                           hintText: Provider.of<DataHandle>(context, listen: false).destination != null? (Provider.of<DataHandle>(context, listen: false).destination!.desAddress!).substring(0,20) + "..." : "Where do you go?",
-          //                           hintStyle: const TextStyle(
-          //                               color: Colors.grey, fontSize: 18.0),
-          //                           border: OutlineInputBorder(
-          //                             borderRadius: BorderRadius.circular(4.0),
-          //                           ),
-          //                           // contentPadding:
-          //                           // const EdgeInsets.only(left: 15.0, top: 15.0),
-          //                           // suffixIcon: Container(
-          //                           //   margin: const EdgeInsets.all(1),
-          //                           //   // height: 58,
-          //                           //   width: 50,
-          //                           //   decoration: const BoxDecoration(
-          //                           //     border: Border(
-          //                           //       left: BorderSide(
-          //                           //         color: Colors.black54,
-          //                           //       ),
-          //                           //     ),
-          //                           //   ),
-          //                           //   child: IconButton(
-          //                           //     icon: const Icon(Icons.search_rounded),
-          //                           //     iconSize: 30.0,
-          //                           //     color: Colors.black54,
-          //                           //     onPressed: () {},
-          //                           //   ),
-          //                           // )
-          //                         ),
-          //                       ),
-          //                     ),
-          //                   ),
-          //                 ]),
-          //               ),
-          //               const SizedBox(
-          //                 height: 25.0,
-          //               ),
-          //               ElevatedButton(
-          //                 child: const Text(
-          //                   "Direction Path",
-          //                 ),
-          //                 onPressed: directPaths,
-          //                 style: ElevatedButton.styleFrom(
-          //                     primary: const Color.fromRGBO(255, 87, 51, 1),
-          //                     textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
-          //                 ),
-          //               ),
-          //
-          //               // Container(
-          //               //   // height: 50.0,
-          //               //   margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-          //               //   child:(
-          //               //       Column(
-          //               //           children: [
-          //               //             Row(
-          //               //               children: <Widget> [
-          //               //                 const Text("Bay Type: ",
-          //               //                   style: TextStyle(
-          //               //                     fontSize: 18.0,
-          //               //                     // color: Colors.green,
-          //               //                     fontWeight: FontWeight.bold,
-          //               //                     letterSpacing: -1.0,
-          //               //                     wordSpacing: 5.0,),
-          //               //                 ),
-          //               //                 Text(bayType),
-          //               //               ],
-          //               //             ),
-          //               //             const SizedBox(
-          //               //               height: 18.0,
-          //               //             ),
-          //               //             Row(
-          //               //               children: <Widget> [
-          //               //                 const Text("Price:    ",
-          //               //                 style: TextStyle(
-          //               //                   fontSize: 18.0,
-          //               //                   // color: Colors.green,
-          //               //                   fontWeight: FontWeight.bold,
-          //               //                   letterSpacing: -1.0,
-          //               //                   wordSpacing: 5.0,),
-          //               //               ),
-          //               //                 Text(bayPrice),
-          //               //               ],
-          //               //             ),
-          //               //             const SizedBox(
-          //               //               height: 18.0,
-          //               //             ),
-          //               //             Row(
-          //               //               children: const <Widget> [
-          //               //                 Text("Operating hours:",
-          //               //                   style: TextStyle(
-          //               //                     fontSize: 18.0,
-          //               //                     // color: Colors.green,
-          //               //                     fontWeight: FontWeight.bold,
-          //               //                     letterSpacing: -1.0,
-          //               //                     wordSpacing: 5.0,),
-          //               //                 ),
-          //               //               ],
-          //               //             ),
-          //               //             const SizedBox(
-          //               //               height: 5.0,
-          //               //             ),
-          //               //             Row(
-          //               //               children: <Widget> [
-          //               //                 Text("     " + bayOp,
-          //               //                   // style: TextStyle(
-          //               //                   //   fontSize: 18.0,
-          //               //                   //   // color: Colors.green,
-          //               //                   //   fontWeight: FontWeight.bold,
-          //               //                   //   letterSpacing: -1.0,
-          //               //                   //   wordSpacing: 5.0,),
-          //               //                 ),
-          //               //               ],
-          //               //             ),
-          //               //
-          //               //
-          //               //           ]
-          //               //       )
-          //               //   ),
-          //               // ),
-          //             ]),
-          //
-          //           )
-          //       )
-          //   ),
-          // ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: AnimatedSize(
+                curve: Curves.easeIn,
+                duration: const Duration(milliseconds: 120),
+                child: Opacity(
+                    opacity: bayOpacity,
+                    child: Container(
+                      height: 160,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        // borderRadius: BorderRadius.only(
+                        //   topRight: Radius.circular(20),
+                        //   topLeft: Radius.circular(20),
+                        // ),
+                      ),
+
+                      child:
+                      Column(children: [
+                        Container(
+                          height: 40,
+                          width: double.infinity,
+                          // color: const Color.fromRGBO(21, 34, 56, 1),
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(21, 34, 56, 1),
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(4),
+                              topLeft: Radius.circular(4),
+                            ),
+                          ),
+                          child: Row(children: const [
+                            SizedBox(
+                              width: 7.0,
+                            ),
+                            Icon(
+                              Icons.add_location_alt_outlined,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Text(
+                              "Direction Path",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  decoration: TextDecoration.none),
+                            ),
+                          ]),
+                        ),
+                        // const SizedBox(
+                        //   height: 15.0,
+                        // ),
+                        // Container(
+                        //   padding:
+                        //   const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                        //   child:
+                        //   Row(textDirection: TextDirection.rtl, children: <Widget>[
+                        //     Expanded(
+                        //       child: Material(
+                        //         child: TextField(
+                        //           onTap: () async {
+                        //             var res = await Navigator.push(context, MaterialPageRoute(builder: (c)=> SearchPlacesScreen()));
+                        //             setState(() {
+                        //               if(res == "obtainedAddress"){
+                        //                 Destination  des = Provider.of<DataHandle>(context, listen: false).destination!;
+                        //                 LatLng point = LatLng(des.desLat!,des.desLng!);
+                        //                 myMarker = [];
+                        //                 myMarker.add(
+                        //                     Marker(
+                        //                         markerId: const MarkerId("desired destination"),
+                        //                         position: point));
+                        //                 CameraPosition cameraPosition = CameraPosition(target:point, zoom: 18);
+                        //                 newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+                        //               }
+                        //             });
+                        //           },
+                        //           readOnly: true,
+                        //           // textInputAction: TextInputAction.search,
+                        //           decoration: InputDecoration(
+                        //             hintText: Provider.of<DataHandle>(context, listen: false).destination != null? (Provider.of<DataHandle>(context, listen: false).destination!.desAddress!).substring(0,20) + "..." : "Where do you go?",
+                        //             hintStyle: const TextStyle(
+                        //                 color: Colors.grey, fontSize: 18.0),
+                        //             border: OutlineInputBorder(
+                        //               borderRadius: BorderRadius.circular(4.0),
+                        //             ),
+                        //             // contentPadding:
+                        //             // const EdgeInsets.only(left: 15.0, top: 15.0),
+                        //             // suffixIcon: Container(
+                        //             //   margin: const EdgeInsets.all(1),
+                        //             //   // height: 58,
+                        //             //   width: 50,
+                        //             //   decoration: const BoxDecoration(
+                        //             //     border: Border(
+                        //             //       left: BorderSide(
+                        //             //         color: Colors.black54,
+                        //             //       ),
+                        //             //     ),
+                        //             //   ),
+                        //             //   child: IconButton(
+                        //             //     icon: const Icon(Icons.search_rounded),
+                        //             //     iconSize: 30.0,
+                        //             //     color: Colors.black54,
+                        //             //     onPressed: () {},
+                        //             //   ),
+                        //             // )
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ]),
+                        // ),
+                        const SizedBox(
+                          height: 25.0,
+                        ),
+                        ElevatedButton(
+                          child: const Text(
+                            "Direction Path",
+                          ),
+                          onPressed: directPaths,
+                          style: ElevatedButton.styleFrom(
+                              primary: const Color.fromRGBO(255, 87, 51, 1),
+                              textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+                          ),
+                        ),
+
+                        // Container(
+                        //   // height: 50.0,
+                        //   margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        //   child:(
+                        //       Column(
+                        //           children: [
+                        //             Row(
+                        //               children: <Widget> [
+                        //                 const Text("Bay Type: ",
+                        //                   style: TextStyle(
+                        //                     fontSize: 18.0,
+                        //                     // color: Colors.green,
+                        //                     fontWeight: FontWeight.bold,
+                        //                     letterSpacing: -1.0,
+                        //                     wordSpacing: 5.0,),
+                        //                 ),
+                        //                 Text(bayType),
+                        //               ],
+                        //             ),
+                        //             const SizedBox(
+                        //               height: 18.0,
+                        //             ),
+                        //             Row(
+                        //               children: <Widget> [
+                        //                 const Text("Price:    ",
+                        //                 style: TextStyle(
+                        //                   fontSize: 18.0,
+                        //                   // color: Colors.green,
+                        //                   fontWeight: FontWeight.bold,
+                        //                   letterSpacing: -1.0,
+                        //                   wordSpacing: 5.0,),
+                        //               ),
+                        //                 Text(bayPrice),
+                        //               ],
+                        //             ),
+                        //             const SizedBox(
+                        //               height: 18.0,
+                        //             ),
+                        //             Row(
+                        //               children: const <Widget> [
+                        //                 Text("Operating hours:",
+                        //                   style: TextStyle(
+                        //                     fontSize: 18.0,
+                        //                     // color: Colors.green,
+                        //                     fontWeight: FontWeight.bold,
+                        //                     letterSpacing: -1.0,
+                        //                     wordSpacing: 5.0,),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //             const SizedBox(
+                        //               height: 5.0,
+                        //             ),
+                        //             Row(
+                        //               children: <Widget> [
+                        //                 Text("     " + bayOp,
+                        //                   // style: TextStyle(
+                        //                   //   fontSize: 18.0,
+                        //                   //   // color: Colors.green,
+                        //                   //   fontWeight: FontWeight.bold,
+                        //                   //   letterSpacing: -1.0,
+                        //                   //   wordSpacing: 5.0,),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //
+                        //
+                        //           ]
+                        //       )
+                        //   ),
+                        // ),
+                      ]),
+
+                    )
+                )
+            ),
+          ),
           Positioned(
             top: 30,
             left: 14,
             child: Container(
-              width: 180,
-              height: 45,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                // borderRadius: BorderRadius.only(
-                //   topRight: Radius.circular(20),
-                //   topLeft: Radius.circular(20),
-                // ),
-              ),
-              child: new DropdownButton(
-                items: listDrop,
-                hint: Text(
-                  "Select a Zone",
-                  style: TextStyle(
-                  color: Colors.indigo,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.none),
+                width: 180,
+                height: 45,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  // borderRadius: BorderRadius.only(
+                  //   topRight: Radius.circular(20),
+                  //   topLeft: Radius.circular(20),
+                  // ),
+                ),
+                child: new DropdownButton(
+                  items: listDrop,
+                  hint: Text(
+                    "Select a Zone",
+                    style: TextStyle(
+                        color: Colors.indigo,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.none),
                   ),
-                onChanged: (value) => updateZone(value),)
+                  onChanged: (value) => updateZone(value),)
             ),
           ),
         ],
@@ -984,4 +987,3 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     );
   }
 }
-
