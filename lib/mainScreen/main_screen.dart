@@ -43,10 +43,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   String readAddress = "";
   var selectedValue = null;
   var slotList = [
-    [0, 130.8423936, -12.4676708, 130.8450544, -12.4653242, 130.8412349, -12.4618881, 130.8384454, -12.4642347, 130.8423936, -12.4676708, 2],
-    [0, 130.8450544, -12.4653242, 130.8479726, -12.4622652, 130.8444107, -12.4589548, 130.8412349, -12.4618881, 130.8450544, -12.4653242, 2],
-    [0, 130.8384454, -12.4642347, 130.8412349, -12.4618881, 130.8365572, -12.4573205, 130.8338535, -12.4597929, 130.8384454, -12.4642347, 2],
-    [0, 130.8365572, -12.4573205, 130.8412349, -12.4618881, 130.8444107, -12.4589548, 130.8395612, -12.4544709, 130.8365572, -12.4573205, 2]
+    
   ];
   var noSlots = [0,0,0,0,0,0];
   //[availaible car, total car, avaible disable, total disable, available motor, total motor]
@@ -158,7 +155,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         slotList = LocationData.zoneA;
         CameraPosition cameraPosition = CameraPosition(target:centralPointA, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-        myZoneVisible(true, "zone A");
+        myZoneVisible(true, "Esplanade St");
         setState(() {
           bayPrice = "\$2.50 per hour";
           bayOp = "Max 3 hours, Mon-Fri 8.00am-5.00pm";
@@ -168,7 +165,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         slotList = LocationData.zoneB;
         CameraPosition cameraPosition = CameraPosition(target:centralPointB, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-        myZoneVisible(true, "zone B");
+        myZoneVisible(true, "Mitchell St");
         setState(() {
           bayPrice = "\$1.80 per hour";
           bayOp = "Max 2 hours, Mon-Fri 8.00am-5.00pm";
@@ -178,7 +175,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         slotList = LocationData.zoneC;
         CameraPosition cameraPosition = CameraPosition(target:centralPointC, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-        myZoneVisible(true, "zone C");
+        myZoneVisible(true, "Knuckey St");
         setState(() {
           bayPrice = "\$1.30 per hour";
           bayOp = "All day (8.00am - 5.00pm)";
@@ -188,7 +185,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         slotList = LocationData.zoneD;
         CameraPosition cameraPosition = CameraPosition(target:centralPointD, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-        myZoneVisible(true, "zone D");
+        myZoneVisible(true, "Bennett St");
         setState(() {
           bayPrice = "Free";
           bayOp = "All day (8.00am - 5.00pm)";
@@ -395,10 +392,10 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   List<DropdownMenuItem<int>> listDrop = [];
   void loadDropList(){
     listDrop = [];
-    listDrop.add(new DropdownMenuItem(child: new Text('Zone A'), value: 1,));
-    listDrop.add(new DropdownMenuItem(child: new Text('Zone B'), value: 2,));
-    listDrop.add(new DropdownMenuItem(child: new Text('Zone C'), value: 3,));
-    listDrop.add(new DropdownMenuItem(child: new Text('Zone D'), value: 4,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Esplanade St'), value: 1,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Mitchell St'), value: 2,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Knuckey St'), value: 3,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Bennett St'), value: 4,));
   }
 
   @override
@@ -437,7 +434,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       ),
                     ),
                     title: Text(
-                      "Zone A",
+                      "Esplanade St",
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -458,7 +455,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       ),
                     ),
                     title: Text(
-                      "Zone B",
+                      "Mitchell St",
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -479,7 +476,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       ),
                     ),
                     title: Text(
-                      "Zone C",
+                      "Knuckey St",
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -500,7 +497,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       ),
                     ),
                     title: Text(
-                      "Zone D",
+                      "Bennett St",
                       style: TextStyle(
                         color: Colors.black,
                       ),
