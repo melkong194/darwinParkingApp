@@ -4,13 +4,14 @@ import 'package:darwin_parking/models/Destination.dart';
 import 'package:darwin_parking/models/user_location.dart';
 import 'package:darwin_parking/services/dataHandle.dart';
 import 'package:darwin_parking/services/helpers_method.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:darwin_parking/Data/mockdata.dart';
-
+import 'package:darwin_parking/Data/model.dart';
 String? mapStyle = '[{"featureType": "poi","stylers": [{"visibility": "off"}]}]';
 
 class MainScreen extends StatefulWidget {
@@ -42,9 +43,8 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   LocationPermission? _locationPermission;
   String readAddress = "";
   var selectedValue = null;
-  var slotList = [
-    
-  ];
+  List<dynamic> slotList = [];
+  List slot = [];
   var noSlots = [0,0,0,0,0,0];
   //[availaible car, total car, avaible disable, total disable, available motor, total motor]
   String carText = "N/A";
@@ -141,7 +141,12 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     });
 
   }
-
+  _setupzoneA() async {
+    List needs = await LocationData.getItem();
+    setState(() {
+      slotList = needs;
+    });
+  }
 
   directPaths()
   {
@@ -152,20 +157,27 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
     myBayVisiable(false);
     switch (opt){
       case 1:
-        slotList = LocationData.zoneA;
+        
+        
+        _setupzoneA();
+        
+        
+
         CameraPosition cameraPosition = CameraPosition(target:centralPointA, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-        myZoneVisible(true, "Esplanade St");
+        myZoneVisible(true, "zone A");
         setState(() {
           bayPrice = "\$2.50 per hour";
           bayOp = "Max 3 hours, Mon-Fri 8.00am-5.00pm";
         });
+
         break;
       case 2:
         slotList = LocationData.zoneB;
+        print(slotList);
         CameraPosition cameraPosition = CameraPosition(target:centralPointB, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-        myZoneVisible(true, "Mitchell St");
+        myZoneVisible(true, "zone B");
         setState(() {
           bayPrice = "\$1.80 per hour";
           bayOp = "Max 2 hours, Mon-Fri 8.00am-5.00pm";
@@ -175,7 +187,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         slotList = LocationData.zoneC;
         CameraPosition cameraPosition = CameraPosition(target:centralPointC, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-        myZoneVisible(true, "Knuckey St");
+        myZoneVisible(true, "zone C");
         setState(() {
           bayPrice = "\$1.30 per hour";
           bayOp = "All day (8.00am - 5.00pm)";
@@ -185,7 +197,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         slotList = LocationData.zoneD;
         CameraPosition cameraPosition = CameraPosition(target:centralPointD, zoom: 18);
         newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-        myZoneVisible(true, "Bennett St");
+        myZoneVisible(true, "zone D");
         setState(() {
           bayPrice = "Free";
           bayOp = "All day (8.00am - 5.00pm)";
@@ -392,10 +404,10 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   List<DropdownMenuItem<int>> listDrop = [];
   void loadDropList(){
     listDrop = [];
-    listDrop.add(new DropdownMenuItem(child: new Text('Esplanade St'), value: 1,));
-    listDrop.add(new DropdownMenuItem(child: new Text('Mitchell St'), value: 2,));
-    listDrop.add(new DropdownMenuItem(child: new Text('Knuckey St'), value: 3,));
-    listDrop.add(new DropdownMenuItem(child: new Text('Bennett St'), value: 4,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Zone A'), value: 1,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Zone B'), value: 2,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Zone C'), value: 3,));
+    listDrop.add(new DropdownMenuItem(child: new Text('Zone D'), value: 4,));
   }
 
   @override
@@ -434,7 +446,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       ),
                     ),
                     title: Text(
-                      "Esplanade St",
+                      "Zone A",
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -455,7 +467,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       ),
                     ),
                     title: Text(
-                      "Mitchell St",
+                      "Zone B",
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -476,7 +488,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       ),
                     ),
                     title: Text(
-                      "Knuckey St",
+                      "Zone C",
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -497,7 +509,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                       ),
                     ),
                     title: Text(
-                      "Bennett St",
+                      "Zone D",
                       style: TextStyle(
                         color: Colors.black,
                       ),
