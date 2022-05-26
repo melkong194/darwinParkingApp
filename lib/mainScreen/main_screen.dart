@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:darwin_parking/mainScreen/search_places_screen.dart';
 import 'package:darwin_parking/models/Destination.dart';
 import 'package:darwin_parking/models/user_location.dart';
@@ -11,7 +12,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:darwin_parking/Data/mockdata.dart';
+
 import 'package:darwin_parking/Data/model.dart';
+
+import 'package:firebase_database/firebase_database.dart';
+
+
 String? mapStyle = '[{"featureType": "poi","stylers": [{"visibility": "off"}]}]';
 
 class MainScreen extends StatefulWidget {
@@ -43,8 +49,17 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   LocationPermission? _locationPermission;
   String readAddress = "";
   var selectedValue = null;
-  List<dynamic> slotList = [];
-  List slot = [];
+
+  
+
+  final zones = [
+    [1, 130.8423936, -12.4676708, 130.8450544, -12.4653242, 130.8412349, -12.4618881, 130.8384454, -12.4642347, 130.8423936, -12.4676708, 1],
+    [1, 130.8450544, -12.4653242, 130.8479726, -12.4622652, 130.8444107, -12.4589548, 130.8412349, -12.4618881, 130.8450544, -12.4653242, 2],
+    [1, 130.8384454, -12.4642347, 130.8412349, -12.4618881, 130.8365572, -12.4573205, 130.8338535, -12.4597929, 130.8384454, -12.4642347, 3],
+    [1, 130.8365572, -12.4573205, 130.8412349, -12.4618881, 130.8444107, -12.4589548, 130.8395612, -12.4544709, 130.8365572, -12.4573205, 4]
+  ];
+  var slotList = [];
+
   var noSlots = [0,0,0,0,0,0];
   //[availaible car, total car, avaible disable, total disable, available motor, total motor]
   String carText = "N/A";
@@ -62,7 +77,23 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   PolylinePoints polylinePoints = PolylinePoints();
   Map<PolylineId, Polyline> polylines = {}; //polylines to show direction
 
+  //Database
+  getData() async{
+    // final ref = FirebaseDatabase.instance.ref();
+    // final event = await ref.once(DatabaseEventType.value);
+    // Map<dynamic, dynamic> map = event.snapshot.value as Map;
+    // print(map.length);
+    // print(map.values.toList()[0][0]["polygon6"]);
+    // return event.snapshot.value;
 
+    // DatabaseReference starCountRef =
+    // FirebaseDatabase.instance.ref();
+    // await starCountRef.onValue.listen((event) async {
+    //   final map = Map<String, dynamic>.from(event.snapshot.value as dynamic);
+    //   print(map.length);
+    //   print(map.values.toList()[0][0]["polygon6"]);
+    // });
+  }
 
   //Methods Defined
   checkLocationPermission() async{
@@ -74,6 +105,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
   locateUserPosition() async
   {
+    getData();
     Position cPosition = await Geolocator.getCurrentPosition(desiredAccuracy : LocationAccuracy.high);
     userPosition = cPosition;
     LatLng latlngPosition = LatLng(userPosition!.latitude, userPosition!.longitude);
@@ -203,6 +235,11 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
           bayOp = "All day (8.00am - 5.00pm)";
         });
         break;
+      case 5:
+        slotList = zones;
+        CameraPosition cameraPosition = _kGooglePlex;
+        newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+        break;
     }
     myPolygon();
   }
@@ -238,6 +275,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   Set<Polygon> myPolygon() {
     Set<Polygon> polygonSet = {};
     noSlots = [0,0,0,0,0,0];
+    if(slotList.isEmpty) slotList = zones;
     setState(() {
       for (var i = 0; i < slotList.length; i++) {
         var el = slotList[i];
@@ -277,6 +315,11 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
               noSlots[4] = noSlots[4] + 1;
             }
             noSlots[5] = noSlots[5] + 1;
+            break;
+
+          case 4:
+          //for blue
+            slotColor = Colors.deepPurpleAccent;
             break;
         }
         polygonSet.add(Polygon(
@@ -404,10 +447,11 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   List<DropdownMenuItem<int>> listDrop = [];
   void loadDropList(){
     listDrop = [];
-    listDrop.add(new DropdownMenuItem(child: new Text('Zone A'), value: 1,));
-    listDrop.add(new DropdownMenuItem(child: new Text('Zone B'), value: 2,));
-    listDrop.add(new DropdownMenuItem(child: new Text('Zone C'), value: 3,));
-    listDrop.add(new DropdownMenuItem(child: new Text('Zone D'), value: 4,));
+    listDrop.add(new DropdownMenuItem(child: new Text("-- Zone A", style: TextStyle(color: Colors.green,fontWeight: FontWeight.w600)), value: 1,));
+    listDrop.add(new DropdownMenuItem(child: new Text("-- Zone B", style: TextStyle(color: Colors.deepOrange,fontWeight: FontWeight.w600)), value: 2,));
+    listDrop.add(new DropdownMenuItem(child: new Text("-- Zone C", style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w600)), value: 3,));
+    listDrop.add(new DropdownMenuItem(child: new Text("-- Zone D", style: TextStyle(color: Colors.deepPurpleAccent,fontWeight: FontWeight.w600)), value: 4,));
+    listDrop.add(new DropdownMenuItem(child: new Text("All zones", style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600)), value: 5,));
   }
 
   @override
@@ -529,9 +573,6 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
             mapType: MapType.normal,
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
-            scrollGesturesEnabled: true,
-            compassEnabled: true,
-            rotateGesturesEnabled: true,
             zoomGesturesEnabled: true,
             zoomControlsEnabled: true,
             mapToolbarEnabled: false,
@@ -992,7 +1033,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                   hint: Text(
                     "Select a Zone",
                     style: TextStyle(
-                        color: Colors.indigo,
+                        color: Colors.pink,
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         decoration: TextDecoration.none),
